@@ -1,5 +1,4 @@
 import React from "react";
-import { Card } from "@/components/ui/card";
 import { PackageCheck, Clock, Truck, Loader2 } from "lucide-react";
 
 const icones = {
