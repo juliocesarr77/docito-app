@@ -1,11 +1,22 @@
-export function Card({ children, className = '' }) {
-  return (
-    <div className={`rounded-xl border border-gray-200 bg-white p-4 shadow ${className}`}>
-      {children}
-    </div>
-  );
-}
+import * as React from "react";
+import { cn } from "../../lib/utils";
 
-export function CardContent({ children }) {
-  return <div className="mt-2">{children}</div>;
-}
+const Card = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("rounded-2xl border bg-white text-black shadow-sm", className)}
+    {...props}
+  />
+));
+Card.displayName = "Card";
+
+const CardContent = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("p-4 text-sm text-muted-foreground", className)}
+    {...props}
+  />
+));
+CardContent.displayName = "CardContent";
+
+export { Card, CardContent };

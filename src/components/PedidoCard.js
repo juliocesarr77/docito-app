@@ -1,4 +1,5 @@
 import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const PedidoCard = ({ pedido, onStatusChange }) => {
   const coresStatus = {

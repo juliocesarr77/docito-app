@@ -1,96 +1,133 @@
 import React, { useState } from 'react';
-import { db } from "./firebase/config";
-import { collection, addDoc } from 'firebase/firestore';
+import { db } from './firebase/config';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const CadastroPedido = () => {
   const [nome, setNome] = useState('');
   const [produto, setProduto] = useState('');
-  const [quantidade, setQuantidade] = useState('');
-  const [status, setStatus] = useState('Pendente');
+  const [valor, setValor] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!nome || !produto || !valor) return alert('Preencha todos os campos');
 
     try {
-      await addDoc(collection(db, "pedidos"), {
+      await addDoc(collection(db, 'pedidos'), {
         nome,
         produto,
-        quantidade,
-        status,
-        data: new Date().toLocaleDateString()
+        valor: parseFloat(valor),
+        status: 'Pendente',
+        data: Timestamp.now(),
       });
-
-      alert("Pedido cadastrado com sucesso!");
-      setNome('');
-      setProduto('');
-      setQuantidade('');
-      setStatus('Pendente');
-      navigate('/dashboard');
+      alert('Pedido cadastrado com sucesso!');
+      navigate('/');
     } catch (error) {
-      console.error("Erro ao cadastrar pedido:", error);
-      alert("Erro ao cadastrar pedido.");
+      console.error('Erro ao cadastrar pedido:', error);
+      alert('Erro ao cadastrar. Tente novamente.');
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#fff5ea] p-6 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-[#5a2a0c] mb-6 text-center">📋 Cadastro de Pedido</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-[#5a2a0c] font-medium mb-1">Nome do Cliente:</label>
-            <input
-              type="text"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-orange-300 rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-[#5a2a0c] font-medium mb-1">Produto (Docinhos):</label>
-            <input
-              type="text"
-              value={produto}
-              onChange={(e) => setProduto(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-orange-300 rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-[#5a2a0c] font-medium mb-1">Quantidade:</label>
-            <input
-              type="number"
-              value={quantidade}
-              onChange={(e) => setQuantidade(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-orange-300 rounded-md"
-            />
-          </div>
-          <div>
-            <label className="block text-[#5a2a0c] font-medium mb-1">Status:</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full px-4 py-2 border border-orange-300 rounded-md"
-            >
-              <option value="Pendente">Pendente</option>
-              <option value="Produção">Produção</option>
-              <option value="Concluído">Concluído</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-[#ff9248] text-white py-2 rounded-md hover:bg-[#ff7300] transition"
-          >
-            Cadastrar Pedido
-          </button>
-        </form>
-      </div>
+    <div style={styles.container}>
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        style={styles.titulo}
+      >
+        Novo Pedido 🍫
+      </motion.h1>
+
+      <motion.form
+        onSubmit={handleSubmit}
+        style={styles.form}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        <label style={styles.label}>Nome do Cliente</label>
+        <input
+          style={styles.input}
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+        />
+
+        <label style={styles.label}>Produto</label>
+        <input
+          style={styles.input}
+          type="text"
+          value={produto}
+          onChange={(e) => setProduto(e.target.value)}
+        />
+
+        <label style={styles.label}>Valor (R$)</label>
+        <input
+          style={styles.input}
+          type="number"
+          step="0.01"
+          value={valor}
+          onChange={(e) => setValor(e.target.value)}
+        />
+
+        <button type="submit" style={styles.botao}>
+          Cadastrar
+        </button>
+      </motion.form>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    padding: '40px 20px',
+    backgroundColor: '#fff7f1',
+    minHeight: '100vh',
+    fontFamily: "'Segoe UI', cursive, sans-serif",
+  },
+  titulo: {
+    fontSize: '2rem',
+    textAlign: 'center',
+    color: '#5a2a0c',
+    marginBottom: '30px',
+  },
+  form: {
+    maxWidth: '400px',
+    margin: '0 auto',
+    background: '#fff',
+    padding: '30px',
+    borderRadius: '16px',
+    boxShadow: '0 0 12px rgba(0, 0, 0, 0.05)',
+  },
+  label: {
+    display: 'block',
+    marginBottom: '6px',
+    color: '#5a2a0c',
+    fontWeight: 'bold',
+    fontSize: '0.95rem',
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    marginBottom: '20px',
+    borderRadius: '10px',
+    border: '1px solid #ccc',
+    fontSize: '1rem',
+  },
+  botao: {
+    backgroundColor: '#ff6b6b',
+    color: '#fff',
+    border: 'none',
+    padding: '12px 20px',
+    fontSize: '1rem',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    transition: '0.3s',
+    width: '100%',
+  },
 };
 
 export default CadastroPedido;

@@ -1,65 +1,93 @@
-// src/Home.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from './logo.png'; // Substitua por sua imagem se desejar
+import { Button } from './components/ui/button';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  const irParaDashboard = () => {
-    navigate('/dashboard');
-  };
-
   return (
     <div style={styles.container}>
-      <img
-        src={logo}
-        alt="Logo Docito"
+      <motion.img
+        src="/logo.png"
+        alt="Logo da Docito"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
         style={styles.logo}
       />
-      <h1 style={styles.titulo}>Bem-vindo à Docito Doceria!</h1>
-      <p style={styles.texto}>Gerencie seus pedidos com carinho e doçura 🍫</p>
-      <button onClick={irParaDashboard} style={styles.botao}>
-        Ir para o Dashboard
-      </button>
+
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        style={styles.titulo}
+      >
+        Bem-vindo(a) à Docito 🍬
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        style={styles.subtitulo}
+      >
+        Deixe seus pedidos mais doces com a gente!
+      </motion.p>
+
+      <motion.div
+        style={styles.botoes}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <Button onClick={() => navigate('/login')} className="bg-pink-400 hover:bg-pink-500 text-white m-2">
+          Entrar
+        </Button>
+        <Button onClick={() => navigate('/cadastro')} className="bg-yellow-300 hover:bg-yellow-400 text-black m-2">
+          Novo Pedido
+        </Button>
+        <Button onClick={() => navigate('/dashboard')} className="bg-green-300 hover:bg-green-400 text-black m-2">
+          Ver Dashboard
+        </Button>
+      </motion.div>
     </div>
   );
 };
 
 const styles = {
   container: {
-    backgroundColor: '#fbd2aa', // fundo caramelo claro
-    height: '100vh',
+    padding: '50px 20px',
+    minHeight: '100vh',
+    backgroundColor: '#fff7f1',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     fontFamily: "'Segoe UI', cursive, sans-serif",
+    textAlign: 'center',
   },
   logo: {
-    width: '120px',
+    width: '150px',
+    height: 'auto',
     marginBottom: '20px',
   },
   titulo: {
-    color: '#5a2a0c', // marrom escuro
-    fontSize: '2rem',
-    margin: 0,
+    fontSize: '2.4rem',
+    color: '#5a2a0c',
+    marginBottom: '10px',
   },
-  texto: {
-    color: '#a64b2a',
-    fontSize: '1.1rem',
-    marginBottom: '30px',
+  subtitulo: {
+    fontSize: '1.2rem',
+    color: '#a05f3c',
+    marginBottom: '40px',
   },
-  botao: {
-    backgroundColor: '#ff6b6b',
-    color: 'white',
-    border: 'none',
-    borderRadius: '10px',
-    padding: '12px 24px',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    boxShadow: '0px 4px 6px rgba(0,0,0,0.1)',
+  botoes: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '15px',
   },
 };
 
 export default Home;
+
