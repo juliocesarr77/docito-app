@@ -16,6 +16,18 @@ const cores = {
   entregue: "bg-gray-100",
 };
 
+const StatusCard = ({ status, total }) => (
+  <Card
+    className={`p-4 flex items-center justify-center rounded-2xl shadow-sm ${cores[status]}`}
+    aria-label={`Total de pedidos ${status}: ${total}`} // Adicionado aria-label
+  >
+    {icones[status]}
+    <div className="text-sm font-medium">
+      {total} {status}
+    </div>
+  </Card>
+);
+
 const ResumoPedidos = ({ pedidos }) => {
   const totais = pedidos.reduce(
     (acc, pedido) => {
@@ -28,13 +40,7 @@ const ResumoPedidos = ({ pedidos }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
       {Object.entries(totais).map(([status, total]) => (
-        <Card
-          key={status}
-          className={`p-4 flex items-center justify-center rounded-2xl shadow-sm ${cores[status]}`}
-        >
-          {icones[status]}
-          <div className="text-sm font-medium">{total} {status}</div>
-        </Card>
+        <StatusCard key={status} status={status} total={total} />
       ))}
     </div>
   );

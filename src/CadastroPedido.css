@@ -1,0 +1,80 @@
+.cadastro-container {
+    padding: 100px 60px;
+    background-color: #fff7f1;
+    min-height: 100vh;
+    font-family: "Segoe UI", cursive, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cadastro-titulo {
+    fontSize: 4rem;
+    text-align: center;
+    color: #5a2a0c;
+    marginBottom: 60px;
+  }
+  
+  .cadastro-form {
+    max-width: 900px; /* Largura original */
+    width: 90%; /* Alterando para porcentagem */
+    margin: 0 auto;
+    background: #fff;
+    padding: 60px;
+    borderRadius: 30px;
+    boxShadow: 0 0 25px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .cadastro-label {
+    display: block;
+    margin-bottom: 10px; /* Reduzi o margin-bottom */
+    color: #5a2a0c;
+    font-weight: bold;
+    fontSize: 1.6rem;
+  }
+  
+  .cadastro-input {
+    width: 100%;
+    padding: 18px;
+    margin-bottom: 25px; /* Reduzi o margin-bottom */
+    borderRadius: 22px;
+    border: 2px solid #ffe0cc;
+    fontSize: 1.4rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+  
+  .cadastro-input:focus {
+    border-color: #ffb347;
+    outline: none;
+    box-shadow: 0 0 12px rgba(255, 179, 71, 0.5);
+  }
+  
+  .cadastro-botao {
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    padding: 18px 28px; /* Reduzi o padding */
+    fontSize: 1.4rem;
+    borderRadius: 22px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 70%;
+    align-self: center;
+  }
+  
+  .cadastro-botao:hover {
+    background-color: #e05b5b;
+  }
+  
+  .cadastro-botao.salvar {
+    background-color: #ffe0b2;
+    color: #bf360c;
+  }
+  
+  .cadastro-botao.salvar:hover {
+    background-color: #ffb347;
+  }
+  

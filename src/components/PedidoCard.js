@@ -1,10 +1,12 @@
 import React from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "./ui/card";
 
-const PedidoCard = ({ pedido, onStatusChange }) => {
+const PedidoCard = React.memo(({ pedido, onStatusChange }) => {
+  console.log('PedidoCard recebendo pedido:', pedido);
+
   const coresStatus = {
     pendente: "bg-yellow-200 text-yellow-800",
-    fazendo: "bg-blue-200 text-blue-800",
+    'em produção': "bg-blue-200 text-blue-800",
     pronto: "bg-green-200 text-green-800",
     entregue: "bg-gray-200 text-gray-800",
   };
@@ -29,15 +31,16 @@ const PedidoCard = ({ pedido, onStatusChange }) => {
           value={pedido.status}
           onChange={handleChange}
           className="mt-2 p-2 border rounded-md text-sm"
+          aria-label="Alterar status do pedido" // Adicionado aria-label
         >
-          <option value="pendente">Pendente</option>
-          <option value="fazendo">Fazendo</option>
-          <option value="pronto">Pronto</option>
-          <option value="entregue">Entregue</option>
+          <option value="pendente">pendente</option>
+          <option value="em produção">em produção</option>
+          <option value="pronto">pronto</option>
+          <option value="entregue">entregue</option>
         </select>
       </CardContent>
     </Card>
   );
-};
+});
 
 export default PedidoCard;

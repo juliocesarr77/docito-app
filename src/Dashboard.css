@@ -1,28 +1,143 @@
+/* Dashboard.css */
 .dashboard-container {
   padding: 2rem;
   background-color: #fffaf5;
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
+  position: relative;
+  text-align: center;
+}
+
+.dashboard-logo {
+  width: 100px;
+  height: auto;
+  margin: 0 auto 2rem;
+  display: block;
 }
 
 .dashboard-title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 2rem;
-  color: #e36224;
+  color: #5a2a0c;
+}
+
+/* Estilos para a navegação principal */
+.dashboard-navigation {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dash-button {
+  background-color: #ffe0b2 !important; /* Cor de destaque */
+  color: #bf360c !important;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.dash-button:hover {
+  background-color: #ffb347 !important;
+}
+
+.button-icon {
+  margin-right: 0.5rem;
+}
+
+/* Estilos para a tabela de status */
+.status-table {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha */
+}
+
+.status-table a {
+  text-decoration: none;
+  color: inherit;
+  display: block; /* Garante que o link ocupe todo o espaço do card */
+}
+
+.status-table a:hover {
+  cursor: pointer;
+  opacity: 0.8; /* Adiciona um efeito de hover */
+}
+
+.status-cell {
+  padding: 1rem;
+  border: 1px solid #ffe0cc;
+  border-radius: 8px;
+  width: 200px;
   text-align: center;
+  margin: 0.5rem; /* Reduzi a margem */
+  transition: background-color 0.3s ease; /* Adiciona transição */
+}
+
+.status-cell:hover {
+  background-color: rgba(255, 255, 255, 0.8); /* Cor de fundo no hover */
+}
+
+.status-cell.pendente {
+  background-color: #ffcdd2; /* Vermelho claro */
+}
+
+.status-cell.em-produção {
+  background-color: #bbdefb; /* Azul claro */
+}
+
+.status-cell.pronto {
+  background-color: #fff9c4; /* Amarelo claro */
+}
+
+.status-cell.entregue {
+  background-color: #c8e6c9; /* Verde claro */
+}
+
+.status-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #5a2a0c;
+  margin-bottom: 0.5rem;
+}
+
+.status-icon {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.status-count {
+  font-size: 1.5rem;
+  color: #e65100;
 }
 
 .card-grid {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  margin-bottom: 2rem;
+}
+
+.dashboard-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: center; /* Centraliza os botões em telas menores */
+  flex-wrap: wrap; /* Permite que os botões quebrem para a próxima linha */
 }
 
 .pedido-card {
   background-color: #fff;
   border: 1px solid #ffe0cc;
   transition: transform 0.2s ease;
+  text-align: left;
 }
 
 .pedido-card:hover {
@@ -33,4 +148,195 @@
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: #5a2a0c;
+}
+
+.dashboard-filter {
+  display: flex;
+  justify-content: center; /* Centraliza o filtro em telas menores */
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-direction: column; /* Adicionado para alinhar os elementos verticalmente */
+}
+
+.home-select {
+  background-color: #ffecb3;
+  border: 1px solid #ffe0cc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: #e65100;
+  width: 100%; /* Aumenta a largura do select para ocupar todo o espaço */
+  max-width: 300px; /* Define uma largura máxima para evitar que o select fique muito grande */
+}
+
+/* Estilos específicos para os botões do Dashboard */
+.home-button-voltar {
+  background-color: #d3eaf2;
+  color: #1e3a8a;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-button-voltar:hover {
+  background-color: #a8d5e8;
+}
+
+.home-button-novo-pedido {
+  background-color: #ffe0b2;
+  color: #bf360c;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.home-button-novo-pedido:hover {
+  background-color: #ffb347;
+}
+
+.home-button-editar {
+  background-color: #b2dfdb;
+  color: #004d40;
+}
+
+.home-button-editar:hover {
+  background-color: #26a69a;
+  color: white;
+}
+
+.home-button-excluir {
+  background-color: #f8bbd0;
+  color: #880e4f;
+}
+
+.home-button-excluir:hover {
+  background-color: #e91e63;
+  color: white;
+}
+
+.home-button-avancar {
+  background-color: #ffecb3;
+  color: #e65100;
+}
+
+.home-button-avancar:hover {
+  background-color: #ffc107;
+  color: black;
+}
+
+/* Estilos para a barra de pesquisa */
+.dashboard-search {
+  margin-bottom: 1rem;
+}
+
+.dashboard-search input {
+  width: 80%; /* Ajusta a largura para ocupar mais espaço */
+  max-width: 400px; /* Define uma largura máxima */
+  padding: 0.5rem;
+  border: 1px solid #ffe0cc;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #e65100;
+}
+/* Estilos para ordenação e filtros avançados */
+.dashboard-ordering,
+.dashboard-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-ordering button {
+  background-color: #ffecb3;
+  color: #e65100;
+  border: 1px solid #ffe0cc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0.2rem; /* Espaçamento entre os botões */
+}
+
+.dashboard-ordering button:hover {
+  background-color: #ffc107;
+  color: black;
+}
+
+.dashboard-filters input {
+  width: 45%; /* Largura para telas maiores */
+  max-width: 200px; /* Define uma largura máxima */
+  padding: 0.5rem;
+  border: 1px solid #ffe0cc;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #e65100;
+  margin-bottom: 0.5rem; /* Espaçamento entre os campos */
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .status-table {
+    flex-direction: column; /* Empilha os cards de status */
+    align-items: center; /* Centraliza os cards */
+  }
+
+  .status-cell {
+    width: 90%; /* Aumenta a largura dos cards */
+    margin: 0.5rem 0; /* Remove a margem horizontal */
+  }
+
+  .dashboard-buttons {
+    flex-direction: column; /* Empilha os botões */
+    align-items: center; /* Centraliza os botões */
+  }
+
+  .home-button {
+    width: 90%; /* Aumenta a largura dos botões */
+  }
+
+  .dashboard-filter {
+    flex-direction: column; /* Empilha os filtros */
+    align-items: center; /* Centraliza os filtros */
+  }
+    .dashboard-filters {
+        flex-direction: column; /* Empilha os inputs de filtro */
+        align-items: center; /* Centraliza os inputs de filtro */
+    }
+
+    .dashboard-filters input {
+        width: 80%; /* Ocupar mais largura em telas menores */
+        max-width: none; /* Remover o limite máximo */
+    }
+
+  .home-select {
+    width: 80%; /* Aumenta a largura do select para ocupar mais espaço */
+    max-width: none; /* Remove a largura máxima */
+  }
+
+  .dashboard-navigation {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dash-button {
+    width: 90% !important;
+    margin-bottom: 0.5rem;
+  }
 }

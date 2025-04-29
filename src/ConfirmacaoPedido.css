@@ -1,0 +1,90 @@
+/* ConfirmacaoPedido.css */
+.confirmacao-container {
+    padding: 40px;
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    max-width: 700px;
+    text-align: center;
+}
+
+.confirmacao-container h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.detalhes-cliente, .detalhes-pedido {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.detalhes-cliente h2, .detalhes-pedido h2 {
+    color: #555;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.detalhes-cliente p {
+    margin-bottom: 10px;
+}
+
+.detalhes-pedido ul {
+    list-style: none;
+    padding: 0;
+}
+
+.detalhes-pedido li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detalhes-pedido li:last-child {
+    border-bottom: none;
+}
+
+.detalhes-pedido .total {
+    font-weight: bold;
+    margin-top: 15px;
+    text-align: right;
+    font-size: 1.1rem;
+}
+
+.acoes-confirmacao {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.acoes-confirmacao button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.acoes-confirmacao button:first-child {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.acoes-confirmacao button:first-child:hover {
+    background-color: #e0e0e0;
+}
+
+.acoes-confirmacao button:last-child {
+    background-color: #28a745;
+    color: white;
+    border: none;
+}
+
+.acoes-confirmacao button:last-child:hover {
+    background-color: #1e7e34;
+}

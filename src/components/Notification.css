@@ -1,0 +1,22 @@
+/* Notification.css */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Cor de sucesso padrão */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0; /* Começa invisível */
+    transition: opacity 0.3s ease-in-out;
+}
+
+.notification-container.show {
+    opacity: 1; /* Torna visível */
+}
+
+.notification-container.error {
+    background-color: #f44336; /* Cor de erro */
+}

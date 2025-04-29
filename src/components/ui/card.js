@@ -10,6 +10,16 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
 ));
 Card.displayName = "Card";
 
+const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-4 font-semibold", className)}
+    {...props}
+  />
+));
+CardHeader.displayName = "CardHeader";
+
+
 const CardContent = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
@@ -19,4 +29,14 @@ const CardContent = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardContent.displayName = "CardContent";
 
-export { Card, CardContent };
+const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex items-center p-4 border-t", className)}
+    {...props}
+  />
+));
+CardFooter.displayName = "CardFooter";
+
+
+export { Card, CardHeader, CardContent, CardFooter };

@@ -1,23 +1,40 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
+// Verifique se as variáveis de ambiente estão definidas
+if (!process.env.REACT_APP_FIREBASE_API_KEY ||
+    !process.env.REACT_APP_FIREBASE_AUTH_DOMAIN ||
+    !process.env.REACT_APP_FIREBASE_PROJECT_ID ||
+    !process.env.REACT_APP_FIREBASE_STORAGE_BUCKET ||
+    !process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID ||
+    !process.env.REACT_APP_FIREBASE_APP_ID) {
+  console.error("Erro: Variáveis de ambiente do Firebase não estão definidas. Certifique-se de que o arquivo .env está na raiz do projeto e que as variáveis estão definidas com o prefixo REACT_APP_.");
+}
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDDlIoAUoxZAVpzAdfilpYhQ2NhthFtjn8",
-  authDomain: "docito--doceria.firebaseapp.com",
-  projectId: "docito--doceria",
-  storageBucket: "docito--doceria.appspot.com",
-  messagingSenderId: "389615804832",
-  appId: "1:389615804832:web:5af5415c3fb66338f004c5"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID
 };
 
-// Inicializa o Firebase
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Exporta o app como default
-export default app;
+let db, auth;
 
-// Exporta auth e db para uso no app
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+try {
+  db = getFirestore(app);
+} catch (error) {
+  console.error("Erro ao inicializar o Firestore:", error);
+}
 
+try {
+  auth = getAuth(app);
+} catch (error) {
+  console.error("Erro ao inicializar o Authentication:", error);
+}
+
+export { db, auth, app };

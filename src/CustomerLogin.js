@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom'; // Importe useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from './firebase/config';
-import './Login.css';
+import { auth } from './firebase/config'; // Certifique-se do caminho correto
+import './CustomerLogin.css'; // Crie um arquivo CSS para o login do cliente (opcional)
 
-const Login = () => {
+const CustomerLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Inicialize useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert('Login realizado com sucesso!'); // Alerta de sucesso
-      navigate('/'); // Redireciona para a home
+      alert('Login do cliente realizado com sucesso!');
+      navigate('/vendas'); // Redirecionar para a página de vendas do cliente
     } catch (err) {
       setError('Erro ao fazer login. Tente novamente.');
     }
@@ -26,26 +26,26 @@ const Login = () => {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      alert('Login com Google realizado com sucesso!'); // Alerta de sucesso
-      navigate('/'); // Redireciona para a home
+      alert('Login do cliente com Google realizado com sucesso!');
+      navigate('/vendas'); // Redirecionar para a página de vendas do cliente
     } catch (err) {
       setError('Erro ao fazer login com o Google. Tente novamente.');
     }
   };
 
   return (
-    <div className="login-container">
+    <div className="customer-login-container">
       <motion.div
-        className="login-box"
+        className="customer-login-box"
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="login-logo">
-          <img src="/logo.png" alt="Logo" className="logo-image" />
+        <div className="customer-login-logo">
+          <img src="/logo_cliente.png" alt="Logo Cliente" className="customer-logo-image" />
         </div>
 
-        <h2 className="login-title">Bem-vindo de volta!</h2>
+        <h2 className="customer-login-title">Acesse sua conta</h2>
 
         <form onSubmit={handleLogin}>
           <div className="form-group">
@@ -76,19 +76,18 @@ const Login = () => {
 
           <button
             type="submit"
-            className="login-button"
+            className="customer-login-button"
           >
             Entrar
           </button>
         </form>
 
         <div className="signup-link">
-          <Link to="/signup" className="link">
-            Ainda não tem uma conta? Crie uma aqui.
+          <Link to="/customer/signup" className="link">
+            Não tem uma conta? Crie uma aqui.
           </Link>
         </div>
 
-        {/* Botão para login com Google */}
         <div className="google-login">
           <button
             onClick={handleGoogleLogin}
@@ -102,4 +101,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default CustomerLogin;

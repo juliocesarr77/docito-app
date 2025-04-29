@@ -1,0 +1,223 @@
+/* Carrinho.css */
+.carrinho-container {
+    padding: 20px;
+    font-family: sans-serif;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+.carrinho-vazio {
+    text-align: center;
+}
+
+.carrinho-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.carrinho-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.item-detalhes {
+    flex-grow: 1;
+}
+
+.item-nome {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.item-preco,
+.item-quantidade,
+.item-subtotal {
+    margin-bottom: 3px;
+    color: #555;
+}
+
+.remover-item-button {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remover-item-button:hover {
+    background-color: #e05b5b;
+}
+
+.carrinho-total {
+    text-align: right;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.carrinho-acoes {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.continuar-comprando-button,
+.finalizar-pedido-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.continuar-comprando-button:hover,
+.finalizar-pedido-button:hover {
+    background-color: #0056b3;
+}
+
+.finalizar-pedido-button {
+    background-color: #28a745;
+}
+
+.finalizar-pedido-button:hover {
+    background-color: #1e7e34;
+}
+
+.quantidade-controle {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.quantidade-controle button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 8px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.quantidade-controle button:hover {
+    background-color: #e0e0e0;
+}
+
+.item-quantidade {
+    margin: 0 10px;
+    font-weight: bold;
+}
+
+.frete-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.frete-container h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.opcao-frete {
+    margin-bottom: 10px;
+}
+
+.opcao-frete label {
+    margin-left: 5px;
+}
+
+.cep-input {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.cep-input label {
+    margin-right: 5px;
+}
+
+.cep-input input[type='text'] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 120px;
+}
+
+.cep-input button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.cep-input button:hover {
+    background-color: #0056b3;
+}
+
+.frete-valor {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.frete-gratis p {
+    color: green;
+    font-weight: bold;
+    text-align: right;
+    margin-top: 10px;
+}
+
+.opcao-frete-externo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.opcao-frete-externo label {
+    font-weight: bold;
+}
+
+.opcao-frete-externo input[type='text'] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+    max-width: 200px;
+}
+
+.opcao-frete-externo button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+    margin-left: 10px;
+}
+
+.opcao-frete-externo button:hover {
+    background-color: #1e7e34;
+}
