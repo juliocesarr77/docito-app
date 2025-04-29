@@ -1,12 +1,12 @@
 /* Carrinho.css */
 .carrinho-container {
-    padding: 20px;
+    padding: 15px; /* Reduz o padding geral em telas menores */
     font-family: sans-serif;
     background-color: #f8f8f8;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 20px auto;
-    max-width: 800px;
+    margin: 15px auto; /* Reduz a margem vertical */
+    max-width: 95%; /* Permite ocupar mais largura em telas menores */
 }
 
 .carrinho-vazio {
@@ -20,8 +20,9 @@
 
 .carrinho-item {
     display: flex;
+    flex-direction: column; /* Alinha os itens verticalmente em telas menores */
     justify-content: space-between;
-    align-items: center;
+    align-items: stretch; /* Estica os itens para ocupar a largura */
     padding: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #eee;
@@ -29,11 +30,14 @@
 
 .item-detalhes {
     flex-grow: 1;
+    margin-bottom: 10px; /* Adiciona espaço abaixo dos detalhes em telas menores */
 }
 
 .item-nome {
     font-weight: bold;
     margin-bottom: 5px;
+    font-size: 1.1rem; /* Reduz um pouco o tamanho da fonte em geral */
+    word-break: break-word; /* Quebra palavras longas */
 }
 
 .item-preco,
@@ -41,6 +45,7 @@
 .item-subtotal {
     margin-bottom: 3px;
     color: #555;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte em geral */
 }
 
 .remover-item-button {
@@ -51,6 +56,8 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
+    width: 100%; /* Ocupa a largura total em telas menores */
 }
 
 .remover-item-button:hover {
@@ -61,12 +68,13 @@
     text-align: right;
     margin-top: 20px;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .carrinho-acoes {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Alinha os botões verticalmente em telas menores */
+    gap: 10px; /* Adiciona espaço entre os botões */
     margin-top: 20px;
 }
 
@@ -79,7 +87,8 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
+    width: 100%; /* Ocupa a largura total em telas menores */
 }
 
 .continuar-comprando-button:hover,
@@ -108,6 +117,9 @@
     margin: 0 5px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.8rem; /* Reduz o tamanho da fonte dos botões */
+    min-width: 30px; /* Garante um tamanho mínimo para os botões */
+    text-align: center;
 }
 
 .quantidade-controle button:hover {
@@ -117,6 +129,9 @@
 .item-quantidade {
     margin: 0 10px;
     font-weight: bold;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
+    min-width: 30px; /* Garante um tamanho mínimo para o número */
+    text-align: center;
 }
 
 .frete-container {
@@ -130,11 +145,12 @@
 .frete-container h2 {
     margin-top: 0;
     margin-bottom: 10px;
-    font-size: 1.1rem;
+    font-size: 1rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .opcao-frete {
     margin-bottom: 10px;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .opcao-frete label {
@@ -145,6 +161,7 @@
     display: flex;
     align-items: center;
     margin-top: 5px;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .cep-input label {
@@ -156,7 +173,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 10px;
-    width: 120px;
+    width: 100%; /* Ocupa a largura total em telas menores */
+    max-width: none; /* Remove a largura máxima em telas menores */
 }
 
 .cep-input button {
@@ -167,7 +185,8 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 0.9rem;
+    font-size: 0.8rem; /* Reduz um pouco o tamanho da fonte */
+    flex-shrink: 0; /* Evita que o botão encolha demais */
 }
 
 .cep-input button:hover {
@@ -178,6 +197,7 @@
     margin-top: 10px;
     text-align: right;
     font-weight: bold;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .frete-gratis p {
@@ -185,25 +205,27 @@
     font-weight: bold;
     text-align: right;
     margin-top: 10px;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .opcao-frete-externo {
     display: flex;
-    align-items: center;
+    flex-direction: column; /* Alinha os elementos verticalmente */
     gap: 10px;
     margin-top: 10px;
+    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .opcao-frete-externo label {
     font-weight: bold;
 }
 
-.opcao-frete-externo input[type='text'] {
+.opcao-frete-externo select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    flex-grow: 1;
-    max-width: 200px;
+    width: 100%;
+    max-width: none;
 }
 
 .opcao-frete-externo button {
@@ -214,10 +236,60 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 0.9rem;
-    margin-left: 10px;
+    font-size: 0.8rem; /* Reduz um pouco o tamanho da fonte */
 }
 
 .opcao-frete-externo button:hover {
     background-color: #1e7e34;
+}
+
+/* Media query para telas menores (máxima largura de 600px) */
+@media (max-width: 600px) {
+    .carrinho-container {
+        margin: 10px auto; /* Reduz ainda mais a margem vertical */
+    }
+
+    .carrinho-item {
+        flex-direction: column; /* Garante alinhamento vertical */
+        align-items: stretch; /* Garante que os itens ocupem a largura */
+    }
+
+    .item-detalhes {
+        margin-bottom: 10px;
+    }
+
+    .carrinho-acoes {
+        flex-direction: column; /* Botões em coluna */
+        gap: 5px; /* Menos espaço entre os botões */
+    }
+}
+
+/* Media query para telas ainda menores (máxima largura de 400px) */
+@media (max-width: 400px) {
+    .item-nome {
+        font-size: 1rem; /* Reduz ainda mais a fonte em telas muito pequenas */
+    }
+
+    .item-preco,
+    .item-quantidade,
+    .item-subtotal {
+        font-size: 0.8rem; /* Reduz ainda mais a fonte */
+    }
+
+    .quantidade-controle button,
+    .item-quantidade {
+        font-size: 0.7rem; /* Reduz ainda mais a fonte dos controles de quantidade */
+        padding: 3px 6px;
+        margin: 0 3px;
+        min-width: 25px;
+    }
+
+    .continuar-comprando-button,
+    .finalizar-pedido-button,
+    .remover-item-button,
+    .cep-input button,
+    .opcao-frete-externo button {
+        font-size: 0.8rem; /* Reduz ainda mais a fonte dos botões */
+        padding: 8px;
+    }
 }
