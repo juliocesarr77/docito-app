@@ -7,6 +7,16 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      setCurrentUser(null); // Opcional: já deve ser atualizado pelo onAuthStateChanged
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+      // Adicione aqui alguma lógica para lidar com erros de logout (ex: exibir uma mensagem)
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
@@ -15,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser }}>
+    <AuthContext.Provider value={{ currentUser, logout }}> {/* Agora a função logout está no value */}
       {children}
     </AuthContext.Provider>
   );

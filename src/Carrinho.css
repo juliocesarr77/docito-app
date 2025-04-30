@@ -1,295 +1,295 @@
 /* Carrinho.css */
 .carrinho-container {
-    padding: 15px; /* Reduz o padding geral em telas menores */
-    font-family: sans-serif;
-    background-color: #f8f8f8;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff7f1; /* Mesmo tom de fundo do Home/Vendas */
+    font-family: 'Segoe UI', cursive, sans-serif;
+    min-height: 100vh;
+  }
+  
+  .carrinho-wrapper {
+    background-color: #fff; /* Caixa branca para o conteúdo */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 15px auto; /* Reduz a margem vertical */
-    max-width: 95%; /* Permite ocupar mais largura em telas menores */
-}
-
-.carrinho-vazio {
+    margin: 20px auto;
+    max-width: 95%; /* Largura máxima padrão para telas menores */
+    padding: 20px;
+  }
+  
+  .carrinho-header {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+    margin-bottom: 20px;
+  }
+  
+  .carrinho-logo-header {
+    width: 125px; /* Define a largura da logo para 125px (como na home) */
+    height: auto; /* Mantém a proporção da imagem */
+  }
+  
+  .carrinho-title {
+    font-size: 2.2rem;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+    margin-bottom: 20px;
     text-align: center;
-}
-
-.carrinho-lista {
+  }
+  
+  .carrinho-vazio-mensagem {
+    color: #a05f3c;
+    font-size: 1em;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .carrinho-lista {
     list-style: none;
     padding: 0;
-}
-
-.carrinho-item {
+  }
+  
+  .carrinho-item {
     display: flex;
-    flex-direction: column; /* Alinha os itens verticalmente em telas menores */
+    flex-direction: column; /* Layout vertical padrão para telas menores */
     justify-content: space-between;
-    align-items: stretch; /* Estica os itens para ocupar a largura */
-    padding: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-.item-detalhes {
+    align-items: stretch;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .item-detalhes {
     flex-grow: 1;
-    margin-bottom: 10px; /* Adiciona espaço abaixo dos detalhes em telas menores */
-}
-
-.item-nome {
+    margin-bottom: 15px;
+  }
+  
+  .item-nome {
     font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+    word-break: break-word;
+  }
+  
+  .item-preco,
+  .item-quantidade,
+  .item-subtotal {
     margin-bottom: 5px;
-    font-size: 1.1rem; /* Reduz um pouco o tamanho da fonte em geral */
-    word-break: break-word; /* Quebra palavras longas */
-}
-
-.item-preco,
-.item-quantidade,
-.item-subtotal {
-    margin-bottom: 3px;
-    color: #555;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte em geral */
-}
-
-.remover-item-button {
-    background-color: #ff6b6b;
-    color: white;
+    color: #777;
+    font-size: 0.95rem;
+  }
+  
+  .quantidade-controle {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .quantidade-controle button {
+    background-color: #ffecb3; /* Amarelo "candy" */
+    color: #e65100; /* Laranja "candy" */
     border: none;
     padding: 8px 12px;
+    margin: 0 8px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 0.9rem;
+    min-width: 40px;
+    text-align: center;
     transition: background-color 0.3s ease;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-    width: 100%; /* Ocupa a largura total em telas menores */
-}
-
-.remover-item-button:hover {
-    background-color: #e05b5b;
-}
-
-.carrinho-total {
-    text-align: right;
-    margin-top: 20px;
+  }
+  
+  .quantidade-controle button:hover {
+    background-color: #ffc107;
+  }
+  
+  .item-quantidade {
     font-weight: bold;
-    font-size: 1.1rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.carrinho-acoes {
-    display: flex;
-    flex-direction: column; /* Alinha os botões verticalmente em telas menores */
-    gap: 10px; /* Adiciona espaço entre os botões */
-    margin-top: 20px;
-}
-
-.continuar-comprando-button,
-.finalizar-pedido-button {
-    background-color: #007bff;
+    font-size: 1rem;
+    min-width: 40px;
+    text-align: center;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+  }
+  
+  .remover-item-button {
+    background-color: #f44336; /* Vermelho "candy" */
     color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
+    font-size: 0.9rem;
     width: 100%; /* Ocupa a largura total em telas menores */
-}
-
-.continuar-comprando-button:hover,
-.finalizar-pedido-button:hover {
-    background-color: #0056b3;
-}
-
-.finalizar-pedido-button {
-    background-color: #28a745;
-}
-
-.finalizar-pedido-button:hover {
-    background-color: #1e7e34;
-}
-
-.quantidade-controle {
-    display: flex;
-    align-items: center;
-    margin: 5px 0;
-}
-
-.quantidade-controle button {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 5px 8px;
-    margin: 0 5px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem; /* Reduz o tamanho da fonte dos botões */
-    min-width: 30px; /* Garante um tamanho mínimo para os botões */
-    text-align: center;
-}
-
-.quantidade-controle button:hover {
-    background-color: #e0e0e0;
-}
-
-.item-quantidade {
-    margin: 0 10px;
+    margin-top: 10px; /* Espaço do controle de quantidade */
+  }
+  
+  .remover-item-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .carrinho-total {
+    text-align: right;
+    margin-top: 25px;
     font-weight: bold;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-    min-width: 30px; /* Garante um tamanho mínimo para o número */
+    font-size: 1.2rem;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+  }
+  
+  .carrinho-acoes {
+    display: flex;
+    flex-direction: column; /* Botões em coluna para telas menores */
+    gap: 15px;
+    margin-top: 25px;
+  }
+  
+  .continuar-comprando-button,
+  .finalizar-pedido-button {
+    background-color: #a5d6a7; /* Verde "candy" claro */
+    color: #388e3c; /* Verde "candy" escuro */
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+    width: 100%; /* Ocupa a largura total em telas menores */
     text-align: center;
-}
-
-.frete-container {
+    font-weight: bold;
+  }
+  
+  .continuar-comprando-button:hover {
+    background-color: #81c784;
+  }
+  
+  .finalizar-pedido-button:hover {
+    background-color: #66bb6a;
+  }
+  
+  .frete-container {
     margin-top: 20px;
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #fff;
-}
-
-.frete-container h2 {
-    margin-top: 0;
+  }
+  
+  .frete-container h2 {
+    font-size: 1.1rem;
+    color: #5a2a0c; /* Tom de marrom "candy" */
     margin-bottom: 10px;
-    font-size: 1rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.opcao-frete {
-    margin-bottom: 10px;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.opcao-frete label {
-    margin-left: 5px;
-}
-
-.cep-input {
+    text-align: left; /* Alinha o título das opções de frete à esquerda */
+  }
+  
+  .opcao-frete {
     display: flex;
     align-items: center;
-    margin-top: 5px;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.cep-input label {
-    margin-right: 5px;
-}
-
-.cep-input input[type='text'] {
-    padding: 8px;
+    margin-bottom: 8px;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+  }
+  
+  .opcao-frete input[type="radio"] {
+    margin-right: 8px;
+  }
+  
+  .opcao-frete label {
+    font-weight: bold;
+  }
+  
+  .opcao-frete-externo-container {
+    margin-top: 15px;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+  }
+  
+  .opcao-frete-externo-container label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .opcao-frete-externo-container select {
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-right: 10px;
-    width: 100%; /* Ocupa a largura total em telas menores */
-    max-width: none; /* Remove a largura máxima em telas menores */
-}
-
-.cep-input button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 0.8rem; /* Reduz um pouco o tamanho da fonte */
-    flex-shrink: 0; /* Evita que o botão encolha demais */
-}
-
-.cep-input button:hover {
-    background-color: #0056b3;
-}
-
-.frete-valor {
-    margin-top: 10px;
-    text-align: right;
-    font-weight: bold;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.frete-gratis p {
-    color: green;
-    font-weight: bold;
-    text-align: right;
-    margin-top: 10px;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.opcao-frete-externo {
-    display: flex;
-    flex-direction: column; /* Alinha os elementos verticalmente */
-    gap: 10px;
-    margin-top: 10px;
-    font-size: 0.9rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.opcao-frete-externo label {
-    font-weight: bold;
-}
-
-.opcao-frete-externo select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 6px; /* Arredondamento semelhante aos botões */
     width: 100%;
-    max-width: none;
-}
-
-.opcao-frete-externo button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
+    margin-top: 5px;
+    font-size: 1rem; /* Tamanho de fonte um pouco maior */
+    color: #5a2a0c; /* Tom de marrom "candy" */
+    background-color: #fff; /* Fundo branco */
+    appearance: none; /* Remove a aparência padrão do navegador */
+    -webkit-appearance: none; /* Para navegadores Safari e Chrome */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%235a2a0c" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: 95%;
+    background-position-y: 50%;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 0.8rem; /* Reduz um pouco o tamanho da fonte */
-}
-
-.opcao-frete-externo button:hover {
-    background-color: #1e7e34;
-}
-
-/* Media query para telas menores (máxima largura de 600px) */
-@media (max-width: 600px) {
-    .carrinho-container {
-        margin: 10px auto; /* Reduz ainda mais a margem vertical */
+  }
+  
+  .opcao-frete-externo-container select:focus {
+    outline: none;
+    border-color: #a5d6a7; /* Verde "candy" claro ao receber foco */
+    box-shadow: 0 0 5px rgba(165, 214, 167, 0.5); /* Sutil sombra ao receber foco */
+  }
+  
+  .opcao-frete-externo-container select option {
+    padding: 8px;
+    font-size: 1rem;
+    color: #5a2a0c;
+  }
+  
+  .frete-valor {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+    color: #5a2a0c; /* Tom de marrom "candy" */
+  }
+  
+  .frete-gratis {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: bold;
+    color: green;
+  }
+  
+  /* Media query para telas maiores (acima de 768px, por exemplo) */
+  @media (min-width: 768px) {
+    .carrinho-wrapper {
+      max-width: 85%; /* Ajuste para a largura desejada em telas maiores */
+      padding: 30px; /* Aumenta o padding interno para mais espaço */
     }
-
+  
     .carrinho-item {
-        flex-direction: column; /* Garante alinhamento vertical */
-        align-items: stretch; /* Garante que os itens ocupem a largura */
+      flex-direction: row; /* Mantém os itens em linha em telas maiores */
+      align-items: center;
     }
-
+  
     .item-detalhes {
-        margin-bottom: 10px;
+      margin-bottom: 0;
+      margin-right: 15px;
     }
-
+  
+    .remover-item-button {
+      width: auto;
+      margin-left: 15px; /* Adiciona um pouco de espaço do conteúdo */
+    }
+  
     .carrinho-acoes {
-        flex-direction: column; /* Botões em coluna */
-        gap: 5px; /* Menos espaço entre os botões */
+      flex-direction: row; /* Mantém os botões em linha em telas maiores */
+      justify-content: flex-end; /* Alinha os botões à direita */
+      gap: 20px;
     }
-}
-
-/* Media query para telas ainda menores (máxima largura de 400px) */
-@media (max-width: 400px) {
-    .item-nome {
-        font-size: 1rem; /* Reduz ainda mais a fonte em telas muito pequenas */
-    }
-
-    .item-preco,
-    .item-quantidade,
-    .item-subtotal {
-        font-size: 0.8rem; /* Reduz ainda mais a fonte */
-    }
-
-    .quantidade-controle button,
-    .item-quantidade {
-        font-size: 0.7rem; /* Reduz ainda mais a fonte dos controles de quantidade */
-        padding: 3px 6px;
-        margin: 0 3px;
-        min-width: 25px;
-    }
-
+  
     .continuar-comprando-button,
-    .finalizar-pedido-button,
-    .remover-item-button,
-    .cep-input button,
-    .opcao-frete-externo button {
-        font-size: 0.8rem; /* Reduz ainda mais a fonte dos botões */
-        padding: 8px;
+    .finalizar-pedido-button {
+      width: auto; /* Largura automática para os botões */
     }
-}
+  }
+  
+  /* Media query para telas ainda maiores */
+  @media (min-width: 1200px) {
+    .carrinho-wrapper {
+      max-width: 75%; /* Se precisar de um ajuste para telas muito grandes */
+    }
+  }

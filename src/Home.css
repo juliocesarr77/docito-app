@@ -1,83 +1,359 @@
+/* Home.css */
 .home-container {
-    padding: 50px 20px;
-    min-height: 100vh;
-    background-color: #fff7f1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: "'Segoe UI', cursive, sans-serif";
-    text-align: center;
-  }
-  
-  .home-logo {
-    width: 150px;
-    height: auto;
-    margin-bottom: 20px;
-  }
-  
-  .home-title {
-    font-size: 2.4rem;
-    color: #5a2a0c;
-    margin-bottom: 10px;
-  }
-  
-  .home-subtitle {
-    font-size: 1.2rem;
-    color: #a05f3c;
-    margin-bottom: 40px;
-  }
-  
-  .home-buttons {
-    display: flex;
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #fff7f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', cursive, sans-serif;
+  text-align: center;
+}
+
+/* Logo no topo */
+.home-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.home-logo-header {
+  width: 125px; /* Ajuste o tamanho conforme necessário */
+  height: auto;
+}
+
+.hero {
+  margin-top: 20px;
+  padding: 20px;
+  width: 100%; /* Garante que a seção ocupe a largura total */
+  max-width: 1200px; /* Limita a largura máxima */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza o conteúdo do hero */
+}
+
+.hero-content h1 {
+  font-size: 2rem;
+  color: #5a2a0c;
+  margin-bottom: 10px;
+}
+
+.hero-content p {
+  font-size: 1rem;
+  color: #a05f3c;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  background-color: #ffecb3; /* Cor "candy" amarela */
+  color: #e65100;
+  font-size: 1em;
+}
+
+.cta-button:hover {
+  background-color: #ffc107;
+  color: black;
+}
+
+.hero-image img {
+  max-width: 100%; /* Garante que a imagem não seja maior que o container */
+  height: auto;
+  margin-top: 20px;
+}
+
+.featured-products {
+  margin-top: 40px;
+  padding: 20px;
+  width: 100%; /* Garante que a seção ocupe a largura total */
+  max-width: 1200px; /* Limita a largura máxima */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza o conteúdo da seção */
+}
+
+.featured-products h2 {
+  font-size: 1.8rem;
+  color: #5a2a0c;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+.products-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 980px;
+}
+
+.product-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+  width: calc(33.333% - 20px);
+  flex: 0 0 auto;
+}
+
+.product-card img {
+  max-width: 80%;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.product-card h3 {
+  font-size: 1.2rem;
+  color: #5a2a0c;
+  margin-bottom: 5px;
+}
+
+.product-card p {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.view-button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  background-color: #f8bbd0; /* Cor "candy" rosa */
+  color: #880e4f;
+  font-size: 0.9em;
+}
+
+.view-button:hover {
+  background-color: #e91e63;
+  color: white;
+}
+
+.product-card.placeholder {
+  background-color: #eee;
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: calc(33.333% - 20px);
+  flex: 0 0 auto;
+}
+
+.product-card .image-placeholder {
+  width: 60%;
+  height: 80px;
+  background-color: #ddd;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.about-us {
+  margin-top: 40px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #a05f3c;
+}
+
+.about-us h2 {
+  font-size: 1.6rem;
+  color: #5a2a0c;
+  margin-bottom: 15px;
+}
+
+.about-us p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.contact-us {
+  margin-top: 40px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+
+.contact-us h2 {
+  font-size: 1.6rem;
+  color: #5a2a0c; /* Cor marrom para o título */
+  margin-bottom: 10px;
+}
+
+.contact-us p {
+  font-size: 1rem;
+  color: #a05f3c; /* Tom de marrom mais claro para a descrição */
+  line-height: 1.6;
+  margin-bottom: 20px; /* Adiciona um pouco de espaço abaixo da descrição */
+}
+
+.contact-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.whatsapp-button,
+.instagram-button {
+  flex: 1;
+  margin-top: 0;
+}
+
+.whatsapp-button {
+  background-color: #25D366;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-button:hover {
+  background-color: #128C7E;
+}
+
+.whatsapp-icon {
+  font-size: 1.2em;
+}
+
+.instagram-button {
+  background-color: #C13584;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.instagram-button:hover {
+  background-color: #8a3ab9;
+}
+
+.instagram-icon {
+  font-size: 1.2em;
+}
+
+/* Responsividade */
+@media (max-width: 992px) { /* Tablets */
+  .products-list {
+    flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px;
   }
-  
-  .home-button {
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.375rem;
-    font-weight: 500;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    border: none; /* Remove a borda padrão */
+  .product-card {
+    width: calc(50% - 20px);
+    flex: 0 0 auto;
   }
-  
-  /* Estilos específicos para cada botão */
-  .home-buttons .home-button-entrar {
-    background-color: #f8bbd0;
-    color: #880e4f;
+}
+
+@media (max-width: 768px) { /* Celulares */
+  .products-list {
+    flex-direction: column;
   }
-  
-  .home-buttons .home-button-entrar:hover {
-    background-color: #e91e63;
-    color: white;
+  .product-card {
+    width: 100%;
+    flex: 0 0 auto;
   }
-  
-  .home-buttons .home-button-novo-pedido {
-    background-color: #ffecb3;
-    color: #e65100;
+
+  .contact-us {
+    flex-direction: column;
+    gap: 10px;
   }
-  
-  .home-buttons .home-button-novo-pedido:hover {
-    background-color: #ffc107;
-    color: black;
+
+  .contact-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    gap: 10px;
   }
-  
-  .home-buttons .home-button-ver-dashboard {
-    background-color: #b2dfdb;
-    color: #004d40;
+
+  .whatsapp-button,
+  .instagram-button {
+    flex: none;
+    width: 100%;
   }
-  
-  .home-buttons .home-button-ver-dashboard:hover {
-    background-color: #26a69a;
-    color: white;
+
+  .hero-content h1 {
+    font-size: 1.8rem;
   }
-  
-  /* Estilos para a logo */
-  .home-logo {
-      width: 150px;
-      height: auto;
+
+  .hero-content p {
+    font-size: 0.9rem;
   }
-  
+
+  .cta-button {
+    font-size: 0.9em;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .featured-products h2 {
+    font-size: 1.6rem;
+  }
+
+  .about-us h2 {
+    font-size: 1.4rem;
+  }
+
+  .contact-us h2 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Estilos de fonte delicada e profissional */
+body,
+.home-container,
+.hero-content h1,
+.hero-content p,
+.cta-button,
+.featured-products h2,
+.product-card h3,
+.product-card p,
+.view-button,
+.about-us h2,
+.about-us p,
+.contact-us h2,
+.contact-us p,
+.whatsapp-button,
+.instagram-button {
+  font-family: 'Segoe UI', 'Open Sans', sans-serif; /* Uma combinação segura e profissional */
+}
+
+h1, h2, h3 {
+  font-weight: 600; /* Um pouco mais de destaque para os títulos */
+}
