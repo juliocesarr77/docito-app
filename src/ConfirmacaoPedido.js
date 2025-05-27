@@ -18,7 +18,7 @@ const ConfirmacaoPedido = () => {
   const [cep, setCep] = useState('');
   const [erroPagamento, setErroPagamento] = useState('');
   const [pedidoId, setPedidoId] = useState(null);
-  const [pagamentoStatus, setPagamentoStatus] = useState('não pago'); // Estado para o status do pagamento
+  // REMOVIDO: const [pagamentoStatus, setPagamentoStatus] = useState('não pago'); // Estado para o status do pagamento
 
   useEffect(() => {
     const verificarPagamentoNetlify = async () => {
@@ -28,11 +28,13 @@ const ConfirmacaoPedido = () => {
           const data = await response.json();
           console.log('Resposta da verificação do Netlify:', data);
           if (data && data.pago) {
-            setPagamentoStatus('pago');
+            // Se você precisar fazer algo com o status, faça aqui,
+            // mas sem a necessidade de um estado se ele não for renderizado
+            // setPagamentoStatus('pago'); // Se não for usado para renderizar, não precisa setar um estado
             alert('Pagamento confirmado!');
             // Adicione aqui qualquer lógica que precise ser executada após o pagamento ser confirmado
           } else {
-            setPagamentoStatus('não pago');
+            // setPagamentoStatus('não pago'); // Se não for usado para renderizar, não precisa setar um estado
             alert('Pagamento não confirmado ou pendente.');
             // Adicione aqui qualquer lógica para pagamento não confirmado
           }

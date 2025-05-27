@@ -28,7 +28,7 @@ import {
     MessageSquarePlus,
     House,
     Link as LinkIcon, // Importando o ícone de link
-    CreditCard, // Novo ícone para status de pagamento
+    // REMOVIDO: CreditCard, // Novo ícone para status de pagamento
 } from 'lucide-react'; // Importando mais ícones
 import './Dashboard.css';
 import { format, differenceInDays } from 'date-fns';
@@ -431,7 +431,7 @@ const Dashboard = () => {
                                 {/* Novo campo para exibir o status do pagamento */}
                                 {pedido.pagamentoStatus && (
                                     <p className={`text-xs font-semibold mt-1 ${getPaymentStatusColor(pedido.pagamentoStatus)} capitalize`}>
-<strong>Pagamento:</strong> {pedido.pagamentoStatus}
+                                        <strong>Pagamento:</strong> {pedido.pagamentoStatus}
                                     </p>
                                 )}
                             </div>

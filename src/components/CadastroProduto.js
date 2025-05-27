@@ -48,6 +48,9 @@ const CadastroProduto = () => {
             case 'running':
               console.log('Upload is running');
               break;
+            default: // Adicionado o default case para satisfazer a regra default-case do ESLint
+              console.log('Upload is in an unknown state:', snapshot.state);
+              break;
           }
         },
         (error) => {
