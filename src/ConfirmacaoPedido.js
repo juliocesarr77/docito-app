@@ -1,5 +1,4 @@
-// ConfirmacaoPedido.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ConfirmacaoPedido.css';
 import { Button } from './components/ui/button';
@@ -18,6 +17,34 @@ const ConfirmacaoPedido = () => {
   const [email, setEmail] = useState('');
   const [cep, setCep] = useState('');
   const [erroPagamento, setErroPagamento] = useState('');
+  const [pedidoId, setPedidoId] = useState(null);
+  const [pagamentoStatus, setPagamentoStatus] = useState('não pago'); // Estado para o status do pagamento
+
+  useEffect(() => {
+    const verificarPagamentoNetlify = async () => {
+      if (pedidoId) {
+        try {
+          const response = await fetch(`https://effortless-sorbet-87113c.netlify.app/.netlify/functions/verificar-pagamento?pedidoId=${pedidoId}`);
+          const data = await response.json();
+          console.log('Resposta da verificação do Netlify:', data);
+          if (data && data.pago) {
+            setPagamentoStatus('pago');
+            alert('Pagamento confirmado!');
+            // Adicione aqui qualquer lógica que precise ser executada após o pagamento ser confirmado
+          } else {
+            setPagamentoStatus('não pago');
+            alert('Pagamento não confirmado ou pendente.');
+            // Adicione aqui qualquer lógica para pagamento não confirmado
+          }
+        } catch (error) {
+          console.error('Erro ao verificar pagamento com Netlify:', error);
+          alert('Erro ao verificar o status do pagamento.');
+        }
+      }
+    };
+
+    verificarPagamentoNetlify();
+  }, [pedidoId]); // Executa quando o pedidoId é definido
 
   if (!clienteData || !clienteData.itensCarrinho) {
     return <div className="confirmacao-container">Erro: Dados do pedido não encontrados.</div>;
@@ -32,7 +59,7 @@ const ConfirmacaoPedido = () => {
     return clienteData.itensCarrinho.map(item => `${item.quantity} x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
   };
 
-  const handleFinalizarCompra = async () => {
+  const salvarPedidoNoFirebase = async (statusPagamentoInicial = 'não pago') => {
     try {
       const valorNumerico = parseFloat(calcularTotalPedido());
       const pedido = {
@@ -41,59 +68,69 @@ const ConfirmacaoPedido = () => {
         cep: cep,
         valor: valorNumerico,
         status: 'pendente',
+        pagamentoStatus: statusPagamentoInicial, // Usando o status inicial
         createdAt: serverTimestamp(),
         data: Timestamp.now(),
       };
 
-      await addDoc(collection(db, 'pedidos'), pedido);
-
-      // Formatar a mensagem para o WhatsApp
-      const mensagemCliente = `Novo pedido recebido!\n\n*Dados do Cliente:*\nNome: ${clienteData.nome}\nTelefone: ${clienteData.telefone || 'Não informado'}\nEndereço: ${clienteData.endereco}, ${clienteData.numero} ${clienteData.pontoReferencia ? `(Ref: ${clienteData.pontoReferencia})` : ''}\nData de Entrega: ${clienteData.dataEntrega}\nHora de Entrega: ${clienteData.horaEntrega}\nEmail: ${email}\nCEP: ${cep}\n\n*Itens do Pedido:*\n${formatarItensPedido()}\n\n*Valor Total: R$ ${calcularTotalPedido()}*`;
-      const mensagemWhatsApp = encodeURIComponent(mensagemCliente);
-
-      window.open(`https://wa.me//5537999965194?text=${mensagemWhatsApp}`, '_blank');
-
+      const docRef = await addDoc(collection(db, 'pedidos'), pedido);
+      console.log('Pedido salvo com ID:', docRef.id);
+      setPedidoId(docRef.id); // Define o ID do pedido no estado
+      return docRef.id; // Retorna o ID do pedido salvo
     } catch (error) {
-      console.error('Erro ao finalizar pedido:', error);
-      alert('Erro ao finalizar seu pedido. Tente novamente.');
+      console.error('Erro ao salvar pedido:', error);
+      alert('Erro ao salvar seu pedido. Tente novamente.');
+      return null;
     }
   };
 
-  const handlePagarComInfinityPay = () => {
+  const handleFinalizarCompra = async () => {
+    const idDoPedido = await salvarPedidoNoFirebase('não pago');
+    if (idDoPedido) {
+      const mensagemCliente = `Novo pedido recebido (ID: ${idDoPedido})!\n\n*Dados do Cliente:*\nNome: ${clienteData.nome}\nTelefone: ${clienteData.telefone || 'Não informado'}\nEndereço: ${clienteData.endereco}, ${clienteData.numero} ${clienteData.pontoReferencia ? `(Ref: ${clienteData.pontoReferencia})` : ''}\nData de Entrega: ${clienteData.dataEntrega}\nHora de Entrega: ${clienteData.horaEntrega}\nEmail: ${email}\nCEP: ${cep}\n\n*Itens do Pedido:*\n${formatarItensPedido()}\n\n*Valor Total: R$ ${calcularTotalPedido()}*`;
+      const mensagemWhatsApp = encodeURIComponent(mensagemCliente);
+      window.open(`https://wa.me//5537999965194?text=${mensagemWhatsApp}`, '_blank');
+    }
+  };
+
+  const handlePagarComInfinityPay = async () => {
     if (!email || !cep) {
       setErroPagamento('Por favor, preencha o e-mail e o CEP para pagar com InfinityPay.');
       return;
     }
     setErroPagamento(''); // Limpa qualquer erro anterior
 
-    const items = clienteData.itensCarrinho.map(item => ({
-      name: item.name,
-      quantity: item.quantity || 1,
-      amount: (item.price * 100).toFixed(0),
-    }));
-    const encodedItems = encodeURIComponent(JSON.stringify(items));
-    const redirectUrl = encodeURIComponent('https://www.docito.online/cliente/agradecimento');
-    const customerName = clienteData.nome ? encodeURIComponent(clienteData.nome) : '';
-    const customerCellphone = clienteData.telefone ? encodeURIComponent(clienteData.telefone) : '';
-    const address = clienteData.endereco ? encodeURIComponent(clienteData.endereco) : '';
-    const addressNumber = clienteData.numero ? encodeURIComponent(clienteData.numero) : '';
-    const addressComplement = clienteData.pontoReferencia ? encodeURIComponent(clienteData.pontoReferencia) : '';
-    const customerEmail = encodeURIComponent(email); // Usa o estado email
-    const addressCep = encodeURIComponent(cep.replace('-', '')); // Usa o estado cep
-    const amount = (parseFloat(calcularTotalPedido()) * 100).toFixed(0);
+    const idDoPedido = await salvarPedidoNoFirebase('pendente'); // Salva como pendente inicialmente
+    if (idDoPedido) {
+      const items = clienteData.itensCarrinho.map(item => ({
+        name: item.name,
+        quantity: item.quantity || 1,
+        amount: (item.price * 100).toFixed(0),
+      }));
+      const encodedItems = encodeURIComponent(JSON.stringify(items));
+      const redirectUrl = encodeURIComponent(`https://www.docito.online/cliente/agradecimento?pedidoId=${idDoPedido}`); // Passa o ID do pedido na URL de redirecionamento
+      const customerName = clienteData.nome ? encodeURIComponent(clienteData.nome) : '';
+      const customerCellphone = clienteData.telefone ? encodeURIComponent(clienteData.telefone) : '';
+      const address = clienteData.endereco ? encodeURIComponent(clienteData.endereco) : '';
+      const addressNumber = clienteData.numero ? encodeURIComponent(clienteData.numero) : '';
+      const addressComplement = clienteData.pontoReferencia ? encodeURIComponent(clienteData.pontoReferencia) : '';
+      const customerEmail = encodeURIComponent(email); // Usa o estado email
+      const addressCep = encodeURIComponent(cep.replace('-', '')); // Usa o estado cep
+      const amount = (parseFloat(calcularTotalPedido()) * 100).toFixed(0);
 
-    let infinityPayUrl = `https://checkout.infinitepay.io/julio_cesar_r77?items=${encodedItems}&redirect_url=${redirectUrl}`;
-    if (customerName) infinityPayUrl += `&customer_name=${customerName}`;
-    if (customerCellphone) infinityPayUrl += `&customer_cellphone=${customerCellphone}`;
-    if (address) infinityPayUrl += `&address=${address}`;
-    if (addressNumber) infinityPayUrl += `&address_number=${addressNumber}`;
-    if (addressComplement) infinityPayUrl += `&address_complement=${addressComplement}`;
-    if (customerEmail) infinityPayUrl += `&customer_email=${customerEmail}`;
-    if (addressCep) infinityPayUrl += `&address_cep=${addressCep}`;
-    infinityPayUrl += `&amount=${amount}`;
+      let infinityPayUrl = `https://checkout.infinitepay.io/julio_cesar_r77?items=${encodedItems}&redirect_url=${redirectUrl}`;
+      if (customerName) infinityPayUrl += `&customer_name=${customerName}`;
+      if (customerCellphone) infinityPayUrl += `&customer_cellphone=${customerCellphone}`;
+      if (address) infinityPayUrl += `&address=${address}`;
+      if (addressNumber) infinityPayUrl += `&address_number=${addressNumber}`;
+      if (addressComplement) infinityPayUrl += `&address_complement=${addressComplement}`;
+      if (customerEmail) infinityPayUrl += `&customer_email=${customerEmail}`;
+      if (addressCep) infinityPayUrl += `&address_cep=${addressCep}`;
+      infinityPayUrl += `&amount=${amount}`;
 
-    console.log('URL de pagamento InfinityPay:', infinityPayUrl);
-    window.location.href = infinityPayUrl;
+      console.log('URL de pagamento InfinityPay:', infinityPayUrl);
+      window.location.href = infinityPayUrl;
+    }
   };
 
   return (
@@ -109,7 +146,7 @@ const ConfirmacaoPedido = () => {
           <p><strong>Telefone:</strong> {clienteData.telefone || 'Não informado'}</p>
           <p><strong>Endereço:</strong> {clienteData.endereco}</p>
           <p><strong>Número:</strong> {clienteData.numero || 'Não informado'}</p>
-          <p><strong>Ponto de Referência:</strong> {clienteData.pontoReferência || 'Não informado'}</p>
+          <p><strong>Ponto de Referência:</strong> {clienteData.pontoReferencia || 'Não informado'}</p>
           <p><strong>Data de Entrega:</strong> {clienteData.dataEntrega}</p>
           <p><strong>Hora de Entrega:</strong> {clienteData.horaEntrega}</p>
         </div>

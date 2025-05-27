@@ -1,0 +1,65 @@
+/* src/DepoimentosHome.css */
+.depoimentos-home {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto 0 auto; /* Aumentei a margem superior para espaçamento */
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  overflow: hidden; /* Para esconder a barra de rolagem (tentativa!) */
+  font-family: Arial, sans-serif; /* Fonte universal */
+}
+
+.depoimentos-home h2 {
+  font-size: 1.8rem;
+  color: #5a2a0c;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+  font-weight: 600; /* Destaque para o título */
+  font-family: Arial, sans-serif; /* Fonte universal */
+}
+
+.depoimentos-carousel-container {
+  display: flex;
+  overflow-x: auto; /* Permite a rolagem */
+  padding: 20px 0;
+  justify-content: flex-start;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.depoimentos-carousel-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+.depoimento-item {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-right: 20px;
+  min-width: 300px;
+  flex: 0 0 auto;
+  text-align: left;
+  font-family: Arial, sans-serif; /* Fonte universal */
+}
+
+.depoimento-item:last-child {
+  margin-right: 0;
+}
+
+.nome-publico {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #5a2a0c;
+  font-size: 1em;
+  font-family: Arial, sans-serif; /* Fonte universal */
+}
+
+.texto-depoimento {
+  font-style: italic;
+  color: #777;
+  font-size: 0.9rem;
+  font-family: Arial, sans-serif; /* Fonte universal */
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom'; // Importe useNavigate
+import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { auth } from './firebase/config';
 import './Login.css';
@@ -9,14 +9,16 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Inicialize useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert('Login realizado com sucesso!'); // Alerta de sucesso
-      navigate('/'); // Redireciona para a home
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await userCredential.user.getIdToken();
+      localStorage.setItem('adminToken', idToken); // Salva o token
+      alert('Login realizado com sucesso!');
+      navigate('/admin/dashboard'); // Redireciona para a página de administração APÓS o login
     } catch (err) {
       setError('Erro ao fazer login. Tente novamente.');
     }
@@ -25,9 +27,11 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      alert('Login com Google realizado com sucesso!'); // Alerta de sucesso
-      navigate('/'); // Redireciona para a home
+      const userCredential = await signInWithPopup(auth, provider);
+      const idToken = await userCredential.user.getIdToken();
+      localStorage.setItem('adminToken', idToken); // Salva o token
+      alert('Login com Google realizado com sucesso!');
+      navigate('/admin'); // Redireciona para a página de administração APÓS o login
     } catch (err) {
       setError('Erro ao fazer login com o Google. Tente novamente.');
     }
@@ -81,12 +85,6 @@ const Login = () => {
             Entrar
           </button>
         </form>
-
-        <div className="signup-link">
-          <Link to="/signup" className="link">
-            Ainda não tem uma conta? Crie uma aqui.
-          </Link>
-        </div>
 
         {/* Botão para login com Google */}
         <div className="google-login">

@@ -1,0 +1,77 @@
+/* GerenciarDepoimentos.css */
+
+body {
+  background-color: #fff7f1; /* Cor de fundo da Home */
+  font-family: Arial, sans-serif; /* Fonte universal */
+}
+
+.feedback-message {
+  background-color: #e6ffe6; /* Cor de fundo verde claro para sucesso */
+  color: #008000; /* Cor do texto verde para sucesso */
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #b3ffb3;
+  border-radius: 5px;
+}
+
+.feedback-message.error {
+  background-color: #ffe6e6; /* Cor de fundo vermelha clara para erro */
+  color: #ff0000; /* Cor do texto vermelha para erro */
+  border: 1px solid #ffb3b3;
+}
+
+.pagination {
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+  font-family: Arial, sans-serif;
+  padding: 8px 12px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+  color: #333;
+}
+
+.pagination button.active {
+  font-family: Arial, sans-serif;
+  background-color: #f8bbd0; /* Cor "candy" rosa */
+  color: #880e4f; /* Cor do texto rosa mais escuro da Home */
+  border-color: #f8bbd0; /* Cor da borda rosa */
+}
+
+.pagination button:hover {
+  background-color: #f0f0f0;
+}
+
+.filters {
+  font-family: Arial, sans-serif;
+  margin-bottom: 15px;
+}
+
+.filters button {
+  font-family: Arial, sans-serif;
+  padding: 8px 15px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: white;
+  color: #333;
+}
+
+.filters button.active {
+  font-family: Arial, sans-serif;
+  background-color: #f8bbd0; /* Cor "candy" rosa */
+  color: #880e4f; /* Cor do texto rosa mais escuro da Home */
+  border-color: #f8bbd0; /* Cor da borda rosa */
+}
+
+.filters button:hover {
+  background-color: #f0f0f0;
+}

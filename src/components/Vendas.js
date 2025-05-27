@@ -139,7 +139,7 @@ const Vendas = () => {
       </div>
       <div className="products-grid">
         {products.map(product => (
-          <div key={product.id} className="product-card">
+         <div key={product.id} className="produto-container"> {/* Mudamos a classe */}
             {product.imageURL && <img src={product.imageURL} alt={product.name} className="product-image" />}
             <h2 className="product-name">{product.name}</h2>
             <p className="product-price">R$ {product.price.toFixed(2)}</p>

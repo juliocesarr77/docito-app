@@ -1,245 +1,269 @@
 /* ConfirmacaoPedido.css */
 .confirmacao-container {
-    padding: 40px;
-    font-family: sans-serif;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 30px auto;
-    max-width: 700px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .confirmacao-header {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding: 20px 0;
-    margin-bottom: 30px;
-  }
-  
-  .confirmacao-logo-header {
-    width: 125px;
-    height: auto;
-  }
-  
-  .confirmacao-container h1 {
-    color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
-    margin-bottom: 20px;
-  }
-  
-  .confirmacao-detalhes {
-    background-color: #fff;
+  padding: 40px;
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 30px auto;
+  max-width: 700px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.confirmacao-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px 0;
+  margin-bottom: 30px;
+}
+
+.confirmacao-logo-header {
+  width: 125px;
+  height: auto;
+}
+
+.confirmacao-container h1 {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
+  margin-bottom: 20px;
+}
+
+.confirmacao-detalhes {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: left;
+  border: 1px solid #ddd;
+  width: 90%;
+  max-width: 600px;
+}
+
+.confirmacao-detalhes h2 {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.detalhes-cliente p,
+.detalhes-pedido p,
+.informacoes-pagamento label,
+.informacoes-pagamento input {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  font-size: 1rem;
+  color: #5a2a0c; /* Cor marrom "candy" - PADRONIZADO */
+  margin-bottom: 10px;
+}
+
+.detalhes-cliente strong,
+.detalhes-pedido strong,
+.informacoes-pagamento label {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  font-weight: bold;
+  color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO (para consistência) */
+}
+
+.detalhes-pedido ul {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  list-style: none;
+  padding: 0;
+}
+
+.detalhes-pedido li {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
+}
+
+.detalhes-pedido li:last-child {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  border-bottom: none;
+}
+
+.detalhes-pedido .frete {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  text-align: right;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #ff8a65; /* Tom de laranja mais vibrante - MANTIDO */
+  font-size: 1rem;
+}
+
+.detalhes-pedido .total {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  font-weight: bold;
+  margin-top: 15px;
+  text-align: right;
+  font-size: 1.2rem;
+  color: #ff6b6b; /* Tom de vermelho "candy" - MANTIDO */
+}
+
+.informacoes-pagamento .confirmacao-label {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  display: block;
+  margin-bottom: 5px;
+  color: #5a2a0c; /* Cor marrom "candy" - PADRONIZADO */
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.informacoes-pagamento .confirmacao-input {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ffe0cc; /* Cor da borda "candy" - MANTIDO */
+  border-radius: 4px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
+}
+
+.informacoes-pagamento .confirmacao-input:focus {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  border-color: #ffb347; /* Cor do foco "candy" - MANTIDO */
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 179, 71, 0.5);
+}
+
+.acoes-confirmacao {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  width: 90%;
+  max-width: 600px;
+}
+
+.acoes-confirmacao button {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 10px 15px; /* Ajuste no padding para ficar semelhante ao da home */
+  border-radius: 5px; /* Ajuste na borda para ficar semelhante ao da home */
+  cursor: pointer;
+  font-size: 1em; /* Ajuste no tamanho da fonte para ficar semelhante ao da home */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+  border: none; /* Removendo a borda padrão dos outros botões */
+}
+
+.acoes-confirmacao button:first-child {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #ffe0b2; /* Amarelo claro "candy" - MANTIDO */
+  color: #bf360c; /* Marrom escuro - MANTIDO */
+}
+
+.acoes-confirmacao button:first-child:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #ffb347; /* Laranja "candy" - MANTIDO */
+  color: #fff;
+}
+
+.acoes-confirmacao button:nth-child(2) {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #00c7ff; /* Cor principal da InfinityPay */
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espaço entre o ícone e o texto */
+}
+
+.acoes-confirmacao button:nth-child(2):hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #00aadd; /* Cor mais escura no hover */
+}
+
+.acoes-confirmacao button:last-child {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #25D366; /* Cor do WhatsApp */
+  color: white;
+}
+
+.acoes-confirmacao button:last-child:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #128C7E; /* Cor do WhatsApp no hover */
+}
+
+.whatsapp-icon-confirmacao {
+  font-size: 1.4em; /* Aumentei o tamanho do ícone do WhatsApp */
+}
+
+.infinitypay-button-icon {
+  max-height: 28px; /* Aumentei um pouco a altura máxima */
+  width: auto; /* Mantenha a proporção da imagem */
+}
+
+.info-pagamento {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #e0f7fa; /* Um tom de azul/verde claro suave */
+  color: #004d40; /* Um tom de verde escuro - MANTIDO (parece intencional) */
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #b2ebf2; /* Borda sutil */
+}
+
+.info-pagamento h2 {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  color: #00695c; /* Um tom de verde mais intenso para o título - MANTIDO (parece intencional) */
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.info-pagamento p {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  font-size: 1em;
+  line-height: 1.6;
+  color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
+}
+
+/* Rodapé com imagem */
+.confirmacao-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.confirmacao-footer img {
+  max-width: 450px; /* Ajuste o tamanho máximo da imagem conforme necessário */
+  height: auto;
+}
+
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+  .confirmacao-container {
     padding: 20px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-    text-align: left;
-    border: 1px solid #ddd;
-    width: 90%;
-    max-width: 600px;
   }
-  
-  .confirmacao-detalhes h2 {
-    color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
-    margin-top: 0;
-    margin-bottom: 15px;
-  }
-  
-  .detalhes-cliente p,
-  .detalhes-pedido p,
-  .informacoes-pagamento label,
-  .informacoes-pagamento input {
-    font-size: 1rem;
-    color: #5a2a0c; /* Cor marrom "candy" - PADRONIZADO */
-    margin-bottom: 10px;
-  }
-  
-  .detalhes-cliente strong,
-  .detalhes-pedido strong,
-  .informacoes-pagamento label {
-    font-weight: bold;
-    color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO (para consistência) */
-  }
-  
-  .detalhes-pedido ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .detalhes-pedido li {
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
-    color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
-  }
-  
-  .detalhes-pedido li:last-child {
-    border-bottom: none;
-  }
-  
-  .detalhes-pedido .frete {
-    text-align: right;
-    margin-top: 15px;
-    font-weight: bold;
-    color: #ff8a65; /* Tom de laranja mais vibrante - MANTIDO */
-    font-size: 1rem;
-  }
-  
-  .detalhes-pedido .total {
-    font-weight: bold;
-    margin-top: 15px;
-    text-align: right;
-    font-size: 1.2rem;
-    color: #ff6b6b; /* Tom de vermelho "candy" - MANTIDO */
-  }
-  
-  .informacoes-pagamento .confirmacao-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #5a2a0c; /* Cor marrom "candy" - PADRONIZADO */
-    font-weight: bold;
-    font-size: 1rem;
-  }
-  
-  .informacoes-pagamento .confirmacao-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ffe0cc; /* Cor da borda "candy" - MANTIDO */
-    border-radius: 4px;
-    font-size: 1rem;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
-  }
-  
-  .informacoes-pagamento .confirmacao-input:focus {
-    border-color: #ffb347; /* Cor do foco "candy" - MANTIDO */
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 179, 71, 0.5);
-  }
-  
-  .acoes-confirmacao {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 20px;
-    width: 90%;
-    max-width: 600px;
-  }
-  
-  .acoes-confirmacao button {
-    padding: 10px 15px; /* Ajuste no padding para ficar semelhante ao da home */
-    border-radius: 5px; /* Ajuste na borda para ficar semelhante ao da home */
-    cursor: pointer;
-    font-size: 1em; /* Ajuste no tamanho da fonte para ficar semelhante ao da home */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    transition: background-color 0.3s ease;
-    border: none; /* Removendo a borda padrão dos outros botões */
-  }
-  
-  .acoes-confirmacao button:first-child {
-    background-color: #ffe0b2; /* Amarelo claro "candy" - MANTIDO */
-    color: #bf360c; /* Marrom escuro - MANTIDO */
-  }
-  
-  .acoes-confirmacao button:first-child:hover {
-    background-color: #ffb347; /* Laranja "candy" - MANTIDO */
-    color: #fff;
-  }
-  
-  .acoes-confirmacao button:nth-child(2) {
-    background-color: #00c7ff; /* Cor principal da InfinityPay */
-    color: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* Espaço entre o ícone e o texto */
-  }
-  
-  .acoes-confirmacao button:nth-child(2):hover {
-    background-color: #00aadd; /* Cor mais escura no hover */
-  }
-  
-  .acoes-confirmacao button:last-child {
-    background-color: #25D366; /* Cor do WhatsApp */
-    color: white;
-  }
-  
-  .acoes-confirmacao button:last-child:hover {
-    background-color: #128C7E; /* Cor do WhatsApp no hover */
-  }
-  
-  .whatsapp-icon-confirmacao {
-    font-size: 1.4em; /* Aumentei o tamanho do ícone do WhatsApp */
-  }
-  
-  .infinitypay-button-icon {
-    max-height: 28px; /* Aumentei um pouco a altura máxima */
-    width: auto; /* Mantenha a proporção da imagem */
-  }
-  
-  .info-pagamento {
-    background-color: #e0f7fa; /* Um tom de azul/verde claro suave */
-    color: #004d40; /* Um tom de verde escuro - MANTIDO (parece intencional) */
+
+  .confirmacao-detalhes {
     padding: 15px;
-    border-radius: 6px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    text-align: center;
-    border: 1px solid #b2ebf2; /* Borda sutil */
   }
-  
-  .info-pagamento h2 {
-    color: #00695c; /* Um tom de verde mais intenso para o título - MANTIDO (parece intencional) */
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1.2em;
+
+  .acoes-confirmacao {
+    flex-direction: column;
+    gap: 10px;
   }
-  
-  .info-pagamento p {
-    font-size: 1em;
-    line-height: 1.6;
-    color: #5a2a0c; /* Tom de marrom "candy" - PADRONIZADO */
-  }
-  
-  /* Rodapé com imagem */
-  .confirmacao-footer {
-    margin-top: 30px;
+
+  .acoes-confirmacao button {
     width: 100%;
-    display: flex;
-    justify-content: center;
   }
-  
+
   .confirmacao-footer img {
-    max-width: 450px; /* Ajuste o tamanho máximo da imagem conforme necessário */
-    height: auto;
+    max-width: 90%; /* Ajusta a largura da imagem em telas menores */
   }
-  
-  /* Media queries para responsividade */
-  @media (max-width: 768px) {
-    .confirmacao-container {
-      padding: 20px;
-    }
-  
-    .confirmacao-detalhes {
-      padding: 15px;
-    }
-  
-    .acoes-confirmacao {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .acoes-confirmacao button {
-      width: 100%;
-    }
-  
-    .confirmacao-footer img {
-      max-width: 90%; /* Ajusta a largura da imagem em telas menores */
-    }
-  }
+}

@@ -1,52 +1,91 @@
 import React, { useState } from 'react';
-import { db } from '../firebase/config';
+import { db, storage } from '../firebase/config';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore'; // Import collection and addDoc directly from firebase/firestore
+import { collection, addDoc } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import './CadastroProduto.css';
 
-console.log("DB object (top of component):", db);
+console.log("Objeto storage no CadastroProduto:", storage); // <----- LINHA ADICIONADA PARA INSPEÇÃO
 
 const CadastroProduto = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [imageFile, setImageFile] = useState(null);
   const [imageURL, setImageURL] = useState('');
   const [category, setCategory] = useState('');
   const [error, setError] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    console.log("DB object (inside handleSubmit):", db);
-
-    if (!imageURL) {
-      setError('Por favor, insira a URL da imagem do produto.');
+    if (!imageFile) {
+      setError('Por favor, selecione uma imagem para o produto.');
       return;
     }
 
+    setIsUploading(true);
+    setUploadProgress(0);
+    setImageURL(''); // Limpa a URL anterior
+
     try {
-      console.log("Attempting to use collection:", collection);
-      console.log("DB object being passed to collection:", db);
-      const productsCollectionRef = collection(db, 'products');
-      console.log("productsCollectionRef:", productsCollectionRef);
-      await addDoc(productsCollectionRef, {
-        name,
-        description,
-        price: parseFloat(price),
-        imageURL: imageURL,
-        category,
-        createdAt: new Date(),
-      });
-      alert('Produto cadastrado com sucesso!');
-      navigate('/dashboard');
-      setName('');
-      setDescription('');
-      setPrice('');
-      setImageURL('');
-      setCategory('');
+      const storageRef = ref(storage, `products/${imageFile.name}_${Date.now()}`);
+      const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+          console.log('Upload is ' + progress + '% done');
+          switch (snapshot.state) {
+            case 'paused':
+              console.log('Upload is paused');
+              break;
+            case 'running':
+              console.log('Upload is running');
+              break;
+          }
+        },
+        (error) => {
+          setIsUploading(false);
+          setError('Erro ao enviar a imagem.');
+          console.error('Erro no upload da imagem:', error);
+          return;
+        },
+        async () => {
+          // Upload concluído, obtenha a URL de download
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            console.log('File available at', downloadURL);
+            setImageURL(downloadURL);
+            setIsUploading(false);
+
+            // Agora, salve os dados do produto no Firestore com a URL da imagem
+            const productsCollectionRef = collection(db, 'products');
+            await addDoc(productsCollectionRef, {
+              name,
+              description,
+              price: parseFloat(price),
+              imageURL: downloadURL, // Use a URL de download obtida do Storage
+              category,
+              createdAt: new Date(),
+            });
+            alert('Produto cadastrado com sucesso!');
+            navigate('/admin/dashboard'); // <----- REDIRECIONA PARA O DASHBOARD CORRETO
+            setName('');
+            setDescription('');
+            setPrice('');
+            setImageFile(null);
+            setUploadProgress(0);
+            setCategory('');
+          });
+        }
+      );
     } catch (err) {
+      setIsUploading(false);
       setError('Erro ao cadastrar o produto.');
       console.error('Erro ao cadastrar produto:', err);
     }
@@ -87,15 +126,17 @@ const CadastroProduto = () => {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="imageURL">URL da Imagem do Produto:</label>
+          <label htmlFor="imageFile">Imagem do Produto:</label>
           <input
-            type="text"
-            id="imageURL"
-            value={imageURL}
-            onChange={(e) => setImageURL(e.target.value)}
+            type="file"
+            id="imageFile"
+            accept="image/*" // Aceita apenas arquivos de imagem
+            onChange={(e) => setImageFile(e.target.files[0])}
             required
           />
-          {imageURL && <img src={imageURL} alt="Preview" style={{ maxWidth: '100px', marginTop: '10px' }} />}
+          {imageFile && <p>Arquivo selecionado: {imageFile.name}</p>}
+          {isUploading && <p>Enviando imagem: {uploadProgress.toFixed(0)}%</p>}
+          {imageURL && !isUploading && <img src={imageURL} alt="Preview" style={{ maxWidth: '100px', marginTop: '10px' }} />}
         </div>
         <div className="form-group">
           <label htmlFor="category">Categoria:</label>
@@ -106,10 +147,13 @@ const CadastroProduto = () => {
             onChange={(e) => setCategory(e.target.value)}
           />
         </div>
-        <button type="submit" className="cadastro-produto-button">
+        <button type="submit" className="cadastro-produto-button" disabled={isUploading}>
           Cadastrar Produto
         </button>
       </form>
+      <button onClick={() => navigate('/admin/dashboard')} className="dashboard-button">
+        Ir para o Dashboard
+      </button>
     </div>
   );
 };

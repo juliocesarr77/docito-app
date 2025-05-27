@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './Home.css';
 import { db } from './firebase/config';
 import { collection, getDocs, limit, query } from 'firebase/firestore';
-import { FaInstagram, FaWhatsapp } from 'react-icons/fa'; // Importando os ícones
+import { FaInstagram, FaWhatsapp } from 'react-icons/fa';
+import DepoimentosHome from './DepoimentosHome'; // Caminho corrigido
 
 const Home = () => {
   const navigate = useNavigate();
   const [destaques, setDestaques] = useState([]);
+  const [adminLoginVisible, setAdminLoginVisible] = useState(false);
+  const [logoClickCount, setLogoClickCount] = useState(0);
+  const logoRef = useRef(null);
 
   useEffect(() => {
     const buscarDestaques = async () => {
@@ -29,11 +33,46 @@ const Home = () => {
 
   const mensagemWhatsApp = encodeURIComponent("Olá! Gostaria de fazer um pedido ou tirar alguma dúvida sobre os doces da Delícias Docito.");
   const linkWhatsApp = `https://wa.me//5537999965194?text=${mensagemWhatsApp}`;
+  const instagramLink = 'https://www.instagram.com/seu_perfil_aqui'; // Substitua pelo seu perfil
+
+  const handleLogoClick = () => {
+    setLogoClickCount(prevCount => prevCount + 1);
+  };
+
+  useEffect(() => {
+    if (logoClickCount >= 5) {
+      setAdminLoginVisible(true);
+      const timer = setTimeout(() => {
+        setAdminLoginVisible(false);
+        setLogoClickCount(0);
+      }, 5000); // O link/botão desaparece após 5 segundos
+      return () => clearTimeout(timer);
+    }
+  }, [logoClickCount]);
 
   return (
     <div className="home-container">
       <div className="home-header">
-        <img src="/logo.png" alt="Logo Docito" className="home-logo-header" />
+        <img
+          src="/logo.png"
+          alt="Logo Docito"
+          className="home-logo-header"
+          onClick={handleLogoClick}
+          style={{ cursor: 'pointer' }}
+          ref={logoRef}
+        />
+        {adminLoginVisible && (
+          <motion.button
+            onClick={() => navigate('/login')}
+            className="admin-login-button"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+          >
+            Login Admin
+          </motion.button>
+        )}
       </div>
       <motion.div
         initial={{ opacity: 0 }}
@@ -76,6 +115,9 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Renderize o componente DepoimentosHome aqui */}
+        <DepoimentosHome />
+
         <section className="about-us">
           <h2>Sobre Nós</h2>
           <p>A Delícias Docito nasceu da paixão por confeitaria e do desejo de levar alegria através de doces saborosos e feitos com carinho. Utilizamos ingredientes frescos e selecionados para garantir a melhor experiência para nossos clientes.</p>
@@ -87,7 +129,7 @@ const Home = () => {
           <button className="whatsapp-button" onClick={() => window.open(linkWhatsApp, '_blank')}>
             <FaWhatsapp className="whatsapp-icon" /> Fale conosco no WhatsApp
           </button>
-          <button className="instagram-button" onClick={() => window.open('https://www.instagram.com/seu_perfil_aqui', '_blank')}>
+          <button className="instagram-button" onClick={() => window.open(instagramLink, '_blank')}>
             <FaInstagram className="instagram-icon" /> Siga-nos no Instagram
           </button>
         </section>

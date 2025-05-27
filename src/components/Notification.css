@@ -1,29 +1,33 @@
 /* Notification.css */
 .notification-container {
-    position: fixed;
-    top: 20px; /* Ajuste a distância do topo conforme necessário */
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #a5d6a7; /* Verde "candy" claro */
-    color: #388e3c; /* Verde "candy" escuro */
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    opacity: 0; /* Inicialmente invisível */
-    transition: opacity 0.3s ease-in-out;
-  }
-  
-  .notification-container.show {
-    opacity: 0.9; /* Tornar visível com um pouco de transparência */
-  }
-  
-  .notification-container.success {
-    background-color: #81c784; /* Um tom um pouco diferente se quiser */
-    color: #1b5e20;
-  }
-  
-  .notification-container.error {
-    background-color: #e57373; /* Vermelho claro para erros, se precisar */
-    color: #b71c1c;
-  }
+  font-family: Arial, sans-serif; /* Fonte universal */
+  position: fixed;
+  top: 20px; /* Ajuste a distância do topo conforme necessário */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #a5d6a7; /* Verde "candy" claro */
+  color: #388e3c; /* Verde "candy" escuro */
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  opacity: 0; /* Inicialmente invisível */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.notification-container.show {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  opacity: 0.9; /* Tornar visível com um pouco de transparência */
+}
+
+.notification-container.success {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #81c784; /* Um tom um pouco diferente se quiser */
+  color: #1b5e20;
+}
+
+.notification-container.error {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #e57373; /* Vermelho claro para erros, se precisar */
+  color: #b71c1c;
+}

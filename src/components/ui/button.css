@@ -1,126 +1,141 @@
 .docito-button {
-    font-family: 'Segoe UI', sans-serif;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease; /* Transições suaves */
-    border-radius: 0.5rem; /* Bordas arredondadas */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-    padding: 0.75rem 1.5rem; /* Espaçamento interno */
-    font-weight: 500; /* Peso da fonte */
-    text-align: center; /* Alinhamento do texto */
-    position: relative; /* Para efeitos de hover */
-    overflow: hidden; /* Esconde o overflow para o efeito de ripple */
-  }
-  
-  .docito-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  
-  /* Efeito de "ripple" */
-  .docito-button::after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.3); /* Cor do "ripple" */
-    opacity: 0;
-    transition: transform 0.3s, opacity 0.3s;
-    transform: scale(5);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  
-  .docito-button:active::after {
-    transform: scale(0);
-    opacity: 1;
-    transition: 0s;
-  }
-  
-  /* Cores */
-  .docito-button-primary {
-    background-color: #e05b5b;
-    color: #fff;
-  }
-  
-  .docito-button-primary:hover {
-    background-color: #a05f3c;
-    transform: translateY(-1px); /* Leve elevação no hover */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada no hover */
-  }
-  
-  .docito-button-secondary {
-    background-color: #6b7280;
-    color: #fff;
-  }
-  
-  .docito-button-secondary:hover {
-    background-color: #4b5563;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  }
-  
-  .docito-button-outline {
-    background-color: transparent;
-    border: 2px solid #e05b5b; /* Aumentei a espessura da borda */
-    color: #e05b5b;
-  }
-  
-  .docito-button-outline:hover {
-    background-color: #fff7f1;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  }
-  
-  .docito-button-default {
-    background-color: #f0f0f0;
-    color: #333;
-  }
-  
-  /* Tamanhos */
-  .docito-button-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-  }
-  
-  .docito-button-md {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-  }
-  
-  .docito-button-lg {
-    padding: 1rem 2rem;
-    font-size: 1.125rem;
-  }
-  
-  /* Estilos específicos para os botões do Dashboard */
-  .docito-button-editar {
-    background-color: #4CAF50; /* Verde */
-    color: white;
-  }
-  
-  .docito-button-editar:hover {
-    background-color: #388E3C;
-  }
-  
-  .docito-button-excluir {
-    background-color: #F44336; /* Vermelho */
-    color: white;
-  }
-  
-  .docito-button-excluir:hover {
-    background-color: #D32F2F;
-  }
-  
-  .docito-button-avancar {
-    background-color: #2196F3; /* Azul */
-    color: white;
-  }
-  
-  .docito-button-avancar:hover {
-    background-color: #1976D2;
-  }
-  
+  font-family: Arial, sans-serif; /* Fonte universal */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease; /* Transições suaves */
+  border-radius: 0.5rem; /* Bordas arredondadas */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  padding: 0.75rem 1.5rem; /* Espaçamento interno */
+  font-weight: 500; /* Peso da fonte */
+  text-align: center; /* Alinhamento do texto */
+  position: relative; /* Para efeitos de hover */
+  overflow: hidden; /* Esconde o overflow para o efeito de ripple */
+}
+
+.docito-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Efeito de "ripple" */
+.docito-button::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.3); /* Cor do "ripple" */
+  opacity: 0;
+  transition: transform 0.3s, opacity 0.3s;
+  transform: scale(5);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.docito-button:active::after {
+  transform: scale(0);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Cores */
+.docito-button-primary {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #e05b5b;
+  color: #fff;
+}
+
+.docito-button-primary:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #a05f3c;
+  transform: translateY(-1px); /* Leve elevação no hover */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada no hover */
+}
+
+.docito-button-secondary {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #6b7280;
+  color: #fff;
+}
+
+.docito-button-secondary:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #4b5563;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.docito-button-outline {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: transparent;
+  border: 2px solid #e05b5b; /* Aumentei a espessura da borda */
+  color: #e05b5b;
+}
+
+.docito-button-outline:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #fff7f1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.docito-button-default {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* Tamanhos */
+.docito-button-sm {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.docito-button-md {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.docito-button-lg {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Estilos específicos para os botões do Dashboard */
+.docito-button-editar {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #4CAF50; /* Verde */
+  color: white;
+}
+
+.docito-button-editar:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #388E3C;
+}
+
+.docito-button-excluir {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #F44336; /* Vermelho */
+  color: white;
+}
+
+.docito-button-excluir:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #D32F2F;
+}
+
+.docito-button-avancar {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #2196F3; /* Azul */
+  color: white;
+}
+
+.docito-button-avancar:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #1976D2;
+}

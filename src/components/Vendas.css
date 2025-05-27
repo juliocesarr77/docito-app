@@ -1,254 +1,270 @@
 /* Vendas.css */
 .vendas-container {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #fff7f1; /* Mesmo tom de fundo do Home */
-    font-family: 'Segoe UI', cursive, sans-serif;
-    min-height: 100vh;
-  }
-  
-  .vendas-header {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding: 20px 0;
-    margin-bottom: 20px; /* Adiciona um pouco de espaço abaixo da logo */
-  }
-  
-  .vendas-logo-header {
-    width: 125px; /* Define a largura da logo para 125px (como na home) */
-    height: auto; /* Mantém a proporção da imagem */
-  }
-  
-  .vendas-title {
-    font-size: 2.2rem;
-    color: #5a2a0c; /* Tom de marrom "candy" */
-    margin-bottom: 10px; /* Reduzi um pouco a margem inferior do título */
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .vendas-subtitle {
-    color: #a05f3c;
-    font-size: 1em;
-    text-align: center;
-    margin-bottom: 20px; /* Adiciona espaço entre o subtítulo e o carrinho */
-  }
-  
-  .vendas-logo {
-    font-size: 1.8em; /* Ajuste o tamanho do ícone */
-  }
-  
-  .cart-indicator {
-    margin-top: 15px;
-    font-weight: 600;
-    color: #880e4f; /* Tom de rosa "candy" */
-    padding: 10px 15px;
-    background-color: #f8bbd0; /* Fundo rosa claro */
-    border-radius: 8px;
-    margin-bottom: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .cart-indicator:hover {
-    background-color: #e91e63; /* Rosa mais vibrante no hover */
-    color: white;
-  }
-  
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Ajustando largura mínima */
-    gap: 25px;
-    margin-top: 20px;
-    width: 95%;
-    max-width: 1200px;
-  }
-  
-  .product-card {
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    padding: 20px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .product-image {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  
-  .product-name {
-    font-size: 1.3em;
-    margin-bottom: 8px;
-    color: #5a2a0c; /* Tom de marrom "candy" */
-    font-weight: 500;
-  }
-  
-  .product-price {
-    color: #e65100; /* Tom de laranja "candy" */
-    font-weight: bold;
-    font-size: 1.2em;
-    margin-bottom: 10px;
-  }
-  
-  .product-description {
-    color: #777;
-    margin-bottom: 15px;
-    font-size: 0.95em;
-  }
-  
-  .product-options {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-  }
-  
-  .quantity-selector {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 80%;
-    justify-content: center;
-  }
-  
-  .quantity-selector label {
-    font-weight: bold;
-    color: #555;
-    margin-right: 8px;
-    font-size: 0.9em;
-  }
-  
-  .quantity-selector input[type="number"] {
-    width: 60px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    text-align: center;
-    font-size: 0.9em;
-  }
-  
-  .quantity-suggestions {
-    display: flex;
-    gap: 5px;
-    margin-top: 5px;
-  }
-  
-  .quantity-suggestions button {
-    padding: 5px 8px;
-    border: 1px solid #f8bbd0; /* Borda rosa claro */
-    border-radius: 4px;
-    background-color: #fce4ec; /* Fundo rosa bem claro */
-    color: #880e4f; /* Texto rosa */
-    cursor: pointer;
-    font-size: 0.85em;
-    transition: background-color 0.3s ease;
-  }
-  
-  .quantity-suggestions button:hover {
-    background-color: #f48fb1; /* Rosa um pouco mais escuro no hover */
-    color: white;
-  }
-  
-  .add-to-cart-button {
-    background-color: #ffecb3; /* Amarelo "candy" */
-    color: #e65100; /* Laranja "candy" */
-    border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s ease;
-    width: 80%;
-    font-weight: 500;
-  }
-  
-  .add-to-cart-button:hover {
-    background-color: #ffc107; /* Amarelo mais vibrante no hover */
-    color: black;
-  }
-  
-  .checkout-button {
-    background-color: #28a745; /* Verde padrão (pode ajustar para um tom "candy" se desejar) */
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1.1em;
-    margin-top: 25px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .checkout-button:hover {
-    background-color: #1e7e34;
-  }
-  
-  .loading-message,
-  .error-message {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-  }
-  
-  .loading-message {
-    background-color: #e0f7fa;
-    color: #007bff;
-    border: 1px solid #b2ebf2;
-  }
-  
-  .error-message {
-    background-color: #ffe0e0;
-    color: #d32f2f;
-    border: 1px solid #f44336;
-  }
-  
-  /* Estilos para placeholders (opcional, para manter consistência com o Home) */
-  .product-card.placeholder {
-    background-color: #eee;
-    color: #999;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .product-card .product-image-placeholder {
-    width: 80px;
-    height: 80px;
-    background-color: #ddd;
-    margin-bottom: 10px;
-    border-radius: 4px;
-  }
-  
-  .view-button {
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 500;
-    text-align: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    border: none;
-    background-color: #f8bbd0; /* Cor "candy" rosa */
-    color: #880e4f;
-    font-size: 0.9em;
-  }
-  
-  .view-button:hover {
-    background-color: #e91e63;
-    color: white;
-  }
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff7f1; /* Mesmo tom de fundo do Home */
+  min-height: 100vh;
+}
+
+.vendas-header {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 30px 0;
+  margin-bottom: 30px;
+}
+
+.vendas-logo-header {
+  width: 150px;
+  height: auto;
+}
+
+.vendas-title {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  font-size: 2.5rem;
+  color: #5a2a0c; /* Tom de marrom "candy" */
+  margin-bottom: 15px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.vendas-subtitle {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  color: #a05f3c;
+  font-size: 1.1em;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.vendas-logo {
+  font-size: 2em;
+}
+
+.cart-indicator {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  margin-top: 20px;
+  font-weight: 600;
+  color: #880e4f; /* Tom de rosa "candy" */
+  padding: 12px 20px;
+  background-color: #f8bbd0; /* Fundo rosa claro */
+  border-radius: 10px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1.05em;
+}
+
+.cart-indicator:hover {
+  background-color: #e91e63;
+  color: white;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px; /* Reduzi o gap para tentar aproximar */
+  margin-top: 20px; /* Ajustei a margem superior */
+  width: 98%;
+  max-width: 1200px; /* Mantive um max-width razoável */
+  justify-items: stretch; /* Esticar os itens para preencher a largura da célula */
+}
+
+.produto-container { /* Novo nome da classe para os containers dos produtos */
+  font-family: Arial, sans-serif;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px; /* Espaço entre os produtos */
+}
+
+.produto-container .product-image {
+  width: 80%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.produto-container .product-name {
+  font-size: 1.1em;
+  margin-bottom: 5px;
+  color: #5a2a0c;
+  font-weight: bold;
+  word-break: break-word;
+}
+
+.produto-container .product-price {
+  color: #e65100;
+  font-weight: bold;
+  font-size: 1em;
+  margin-bottom: 8px;
+}
+
+.produto-container .product-description {
+  color: #777;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  word-break: break-word;
+}
+
+.produto-container .product-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 90%;
+}
+
+.produto-container .quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.produto-container .quantity-selector label {
+  font-weight: bold;
+  color: #555;
+  font-size: 0.8em;
+  margin-right: 5px;
+}
+
+.produto-container .quantity-selector input[type="number"] {
+  width: 50px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+.produto-container .quantity-suggestions {
+  display: flex;
+  gap: 3px;
+  margin-top: 3px;
+}
+
+.produto-container .quantity-suggestions button {
+  padding: 4px 6px;
+  border: 1px solid #f8bbd0;
+  border-radius: 3px;
+  background-color: #fce4ec;
+  color: #880e4f;
+  cursor: pointer;
+  font-size: 0.75em;
+  transition: background-color 0.3s ease;
+}
+
+.produto-container .quantity-suggestions button:hover {
+  background-color: #f48fb1;
+  color: white;
+}
+
+.produto-container .add-to-cart-button {
+  background-color: #ffecb3;
+  color: #e65100;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+  width: 90%;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.produto-container .add-to-cart-button:hover {
+  background-color: #ffc107;
+  color: black;
+}
+
+.checkout-button {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #28a745; /* Verde padrão */
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1em;
+  margin-top: 25px;
+  transition: background-color 0.3s ease;
+}
+
+.checkout-button:hover {
+  background-color: #1e7e34;
+}
+
+.loading-message,
+.error-message {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.loading-message {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #e0f7fa;
+  color: #007bff;
+  border: 1px solid #b2ebf2;
+}
+
+.error-message {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #ffe0e0;
+  color: #d32f2f;
+  border: 1px solid #f44336;
+}
+
+.produto-container.placeholder {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #eee;
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.produto-container .product-image-placeholder {
+  width: 80px;
+  height: 80px;
+  background-color: #ddd;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.view-button {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+  background-color: #f8bbd0; /* Cor "candy" rosa */
+  color: #880e4f;
+  font-size: 0.9em;
+}
+
+.view-button:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #e91e63;
+  color: white;
+}

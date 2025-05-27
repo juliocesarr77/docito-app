@@ -1,7 +1,7 @@
 /* AgradecimentoPedido.css */
 .agradecimento-container {
+  font-family: Arial, sans-serif; /* Fonte universal */
   padding: 50px;
-  font-family: sans-serif;
   background-color: #e6ffe6;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -12,22 +12,26 @@
 }
 
 .agradecimento-container h1 {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 2.5rem;
   margin-bottom: 20px;
 }
 
 .agradecimento-container p {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 30px;
 }
 
 .seguir-instagram {
+  font-family: Arial, sans-serif; /* Fonte universal */
   margin-top: 40px;
   text-align: center;
 }
 
 .seguir-instagram p {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1.1rem;
   margin-bottom: 20px;
 }
@@ -37,6 +41,7 @@
 }
 
 .botao-instagram {
+  font-family: Arial, sans-serif; /* Fonte universal */
   background-color: #e4405f; /* Cor do botão inspirada no Instagram */
   color: white !important; /* Força a cor branca do texto */
   border: none;
@@ -51,6 +56,7 @@
 }
 
 .botao-instagram:hover {
+  font-family: Arial, sans-serif; /* Fonte universal */
   background-color: #d42a4f;
 }
 

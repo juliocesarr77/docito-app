@@ -1,9 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Estilos personalizados da Docito */
 body {
   background-color: #fff0f5;
-  font-family: 'Inter', sans-serif;
+  font-family: Arial, sans-serif; /* Substituindo 'Inter' por Arial */
 }

@@ -5,9 +5,10 @@
   background-color: #fff7f1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  font-family: 'Segoe UI', cursive, sans-serif;
-  text-align: center;
+  /* Remover o align-items: stretch; para permitir o alinhamento padrão (esquerda) */
+  font-family: Arial, sans-serif; /* Fonte universal */
+  text-align: center; /* Centraliza o texto dentro dos elementos */
+  position: relative; /* Para posicionar o botão de login admin */
 }
 
 /* Logo no topo */
@@ -16,11 +17,31 @@
   justify-content: center;
   width: 100%;
   padding: 20px 0;
+  position: relative; /* Contexto para posicionamento do botão admin */
 }
 
 .home-logo-header {
-  width: 125px; /* Ajuste o tamanho conforme necessário */
+  width: 125px;
   height: auto;
+  cursor: pointer; /* Indica que é clicável para o easter egg */
+}
+
+.admin-login-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo semi-transparente */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  z-index: 10; /* Para garantir que apareça sobre outros elementos */
+}
+
+.admin-login-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .hero {
@@ -31,21 +52,26 @@
   display: flex;
   flex-direction: column;
   align-items: center; /* Centraliza o conteúdo do hero */
+  margin: 20px auto 0 auto; /* Centralizar a seção */
+  box-sizing: border-box;
 }
 
 .hero-content h1 {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 2rem;
   color: #5a2a0c;
   margin-bottom: 10px;
 }
 
 .hero-content p {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1rem;
   color: #a05f3c;
   margin-bottom: 20px;
 }
 
 .cta-button {
+  font-family: Arial, sans-serif; /* Fonte universal */
   padding: 0.75rem 1.5rem;
   border-radius: 0.375rem;
   font-weight: 500;
@@ -77,9 +103,12 @@
   display: flex;
   flex-direction: column;
   align-items: center; /* Centraliza o conteúdo da seção */
+  margin: 20px auto 0 auto; /* Centralizar a seção */
+  box-sizing: border-box;
 }
 
 .featured-products h2 {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1.8rem;
   color: #5a2a0c;
   margin-bottom: 20px;
@@ -97,6 +126,7 @@
 }
 
 .product-card {
+  font-family: Arial, sans-serif; /* Fonte universal */
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -114,18 +144,21 @@
 }
 
 .product-card h3 {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1.2rem;
   color: #5a2a0c;
   margin-bottom: 5px;
 }
 
 .product-card p {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 0.9rem;
   color: #777;
   margin-bottom: 10px;
 }
 
 .view-button {
+  font-family: Arial, sans-serif; /* Fonte universal */
   padding: 0.6rem 1.2rem;
   border-radius: 0.375rem;
   font-weight: 500;
@@ -172,15 +205,19 @@
   align-items: center;
   text-align: center;
   color: #a05f3c;
+  margin: 20px auto 0 auto; /* Centralizar a seção */
+  box-sizing: border-box;
 }
 
 .about-us h2 {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1.6rem;
   color: #5a2a0c;
   margin-bottom: 15px;
 }
 
 .about-us p {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1rem;
   line-height: 1.6;
 }
@@ -195,15 +232,19 @@
   align-items: center;
   text-align: center;
   gap: 15px;
+  margin: 20px auto 0 auto; /* Centralizar a seção */
+  box-sizing: border-box;
 }
 
 .contact-us h2 {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1.6rem;
   color: #5a2a0c; /* Cor marrom para o título */
   margin-bottom: 10px;
 }
 
 .contact-us p {
+  font-family: Arial, sans-serif; /* Fonte universal */
   font-size: 1rem;
   color: #a05f3c; /* Tom de marrom mais claro para a descrição */
   line-height: 1.6;
@@ -225,6 +266,7 @@
 }
 
 .whatsapp-button {
+  font-family: Arial, sans-serif; /* Fonte universal */
   background-color: #25D366;
   color: white;
   border: none;
@@ -248,6 +290,7 @@
 }
 
 .instagram-button {
+  font-family: Arial, sans-serif; /* Fonte universal */
   background-color: #C13584;
   color: white;
   border: none;
@@ -351,9 +394,39 @@ body,
 .contact-us p,
 .whatsapp-button,
 .instagram-button {
-  font-family: 'Segoe UI', 'Open Sans', sans-serif; /* Uma combinação segura e profissional */
+  font-family: Arial, 'Open Sans', sans-serif; /* Uma combinação segura e profissional */
 }
 
 h1, h2, h3 {
   font-weight: 600; /* Um pouco mais de destaque para os títulos */
+}
+
+.depoimentos-home {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  width: 100%; /* Ocupar a largura total do pai */
+  max-width: 1200px; /* Limitar a largura em telas maiores */
+  margin: 20px auto 0 auto; /* Centralizar a seção */
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.depoimentos-carousel-container {
+  display: flex;
+  overflow-x: auto;
+  padding: 20px 0;
+  justify-content: flex-start;
+}
+
+.depoimento-item {
+  font-family: Arial, sans-serif; /* Fonte universal */
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 15px;
+  margin-right: 20px;
+  min-width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex: 0 0 auto;
+  text-align: left;
 }
