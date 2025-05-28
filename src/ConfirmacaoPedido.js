@@ -5,11 +5,10 @@ import { Button } from './components/ui/button';
 import { db } from './firebase/config';
 import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { FaWhatsapp } from 'react-icons/fa';
-// Removendo imports antigos do InfinityPay
-// import infinityPayLogo from './assets/infinitepay.png';
-// import infinityPayButtonIcon from './assets/Logo_InfinitePay.svg.png';
-// Adicionando o novo import da logo do PagSeguro
-import pagSeguroLogo from './assets/Logo-PagSeguro.webp'; // Certifique-se que o nome do arquivo e a extensão estão corretos
+
+// Importando a logo do PagSeguro com o nome sugerido
+import pagSeguroLogo from './assets/pagseguro_logo_uol.png'; // Caminho e nome do arquivo da nova logo
+import pagSeguroButtonIcon from './assets/pagseguro_logo_uol.png'; // Usaremos a mesma logo para o botão
 
 const ConfirmacaoPedido = () => {
     const location = useLocation();
@@ -26,6 +25,10 @@ const ConfirmacaoPedido = () => {
 
     // FUNÇÕES DECLARADAS AQUI, ANTES DE QUALQUER RETURN CONDICIONAL
     const calcularTotalPedido = () => {
+        // Garantir que itensCarrinho existe antes de tentar reduzir
+        if (!clienteData.itensCarrinho || clienteData.itensCarrinho.length === 0) {
+            return '0.00';
+        }
         const subtotal = clienteData.itensCarrinho.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
         return (subtotal + (clienteData.valorFrete || 0)).toFixed(2);
     };
@@ -50,7 +53,7 @@ const ConfirmacaoPedido = () => {
                 pagamentoStatus: statusPagamentoInicial, // Usando o status inicial
                 createdAt: serverTimestamp(),
                 data: Timestamp.now(),
-                // Campos para PagSeguro, inicialmente vazios
+                // Campos para PagSeguro
                 pagSeguroTransactionId: '',
                 pagSeguroStatus: '', // Adicione um campo para o status específico do PagSeguro
             };
@@ -79,17 +82,20 @@ const ConfirmacaoPedido = () => {
         }
     };
 
-    // NOVA FUNÇÃO PARA PAGAR COM PAGSEGURO
+    // FUNÇÃO PARA PAGAR COM PAGSEGURO
     const handlePagarComPagSeguro = async () => {
         if (!email || !cep) {
             setErroPagamento('Por favor, preencha o e-mail e o CEP para pagar online.');
+            console.log('Erro: Email ou CEP não preenchidos.'); // Adicionei este log
             return;
         }
         setErroPagamento(''); // Limpa qualquer erro anterior
+        console.log('Email e CEP preenchidos. Salvando pedido no Firebase...'); // Adicionei este log
 
         // Salva o pedido no Firebase com status inicial 'aguardando_pagamento'
         const idDoPedido = await salvarPedidoNoFirebase('aguardando_pagamento');
         if (idDoPedido) {
+            console.log('Pedido salvo no Firebase com ID:', idDoPedido); // Adicionei este log
             try {
                 const clientePagSeguro = {
                     nome: clienteData.nome,
@@ -110,6 +116,14 @@ const ConfirmacaoPedido = () => {
                 // URL para onde o PagSeguro deve redirecionar o cliente após o pagamento
                 const redirectUrlPagSeguro = `${window.location.origin}/agradecimento?pedidoId=${idDoPedido}`;
 
+                console.log('Chamando Netlify Function com os seguintes dados:', {
+                    pedidoId: idDoPedido,
+                    valorTotal: valorTotalCentavos,
+                    cliente: clientePagSeguro,
+                    itensCarrinho: itensPagSeguro,
+                    redirect_url: redirectUrlPagSeguro,
+                }); // Adicionei este log
+
                 // Chama a Netlify Function que cria o pagamento no PagSeguro
                 const response = await fetch('/.netlify/functions/criar-pagamento-pagseguro', {
                     method: 'POST',
@@ -126,8 +140,10 @@ const ConfirmacaoPedido = () => {
                 });
 
                 const data = await response.json();
+                console.log('Resposta da Netlify Function:', data); // Adicionei este log
 
                 if (response.ok && data.paymentLink) {
+                    console.log('Link de pagamento gerado:', data.paymentLink); // Adicionei este log
                     // Redireciona o cliente para o link de pagamento do PagSeguro
                     window.location.href = data.paymentLink;
                 } else {
@@ -136,10 +152,12 @@ const ConfirmacaoPedido = () => {
                     // Opcional: Atualizar status do pedido no Firebase para "erro_pagamento"
                 }
             } catch (error) {
-                console.error('Erro ao iniciar pagamento PagSeguro:', error);
+                console.error('Erro geral ao iniciar pagamento PagSeguro:', error); // Adicionei este log
                 setErroPagamento(`Erro ao iniciar pagamento: ${error.message}.`);
                 // Opcional: Atualizar status do pedido no Firebase para "erro_pagamento"
             }
+        } else {
+            console.log('Falha ao salvar pedido no Firebase.'); // Adicionei este log
         }
     };
     // FIM DAS FUNÇÕES DECLARADAS AQUI
@@ -147,32 +165,25 @@ const ConfirmacaoPedido = () => {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const idFromUrl = queryParams.get('pedidoId');
-        // Parâmetros do InfinitePay (AGORA REMOVIDOS COMPLETAMENTE DA LÓGICA)
-        // const transactionIdFromUrl = queryParams.get('transaction_id');
-        // const orderNsuFromUrl = queryParams.get('order_nsu');
-        // const slugFromUrl = queryParams.get('slug');
+        // Parâmetros de InfinitePay REMOVIDOS COMPLETAMENTE
 
         const verificarEAtualizarPagamento = async () => {
             if (idFromUrl) {
                 setPedidoId(idFromUrl);
                 setPagamentoConcluido(true);
                 setMensagemAgradecimento('Obrigado pelo seu pedido! Verificando a confirmação do pagamento...');
-                // Você pode adicionar uma chamada ao Firebase aqui para buscar o status mais recente do pedido
-                // e exibir uma mensagem mais precisa, se o webhook do PagSeguro já tiver atualizado.
+                // A lógica para buscar status no Firebase pode ser adicionada aqui se necessário
             } else if (location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento')) {
-                // Se chegou na página de agradecimento sem um pedidoId na URL (pode ser acesso direto ou erro)
-                // E se ainda não está marcado como pagamento concluído
+                // Se chegou na página de agradecimento sem um pedidoId na URL e não está marcado como concluído
                 if (!pagamentoConcluido) {
                     setPagamentoConcluido(true);
                     setMensagemAgradecimento('Obrigado pelo seu pedido! Aguardando a confirmação do pagamento.');
                 }
             }
-            // A lógica antiga do InfinitePay foi removida aqui.
         };
 
-        // Chamamos a função de verificação apenas se for a página de agradecimento OU se tiver dados de cliente (primeira carga da Confirmação)
-        // ESSA É A LINHA CORRIGIDA COM OS PARÊNTESES PARA ESLINT
-        if ((location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento')) || clienteData.itensCarrinho) {
+        // Chamamos a função de verificação apenas se for a página de agradecimento OU se tiver dados de cliente
+        if ((location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento')) || (clienteData.itensCarrinho && clienteData.itensCarrinho.length > 0)) {
             verificarEAtualizarPagamento();
         }
 
@@ -190,7 +201,7 @@ const ConfirmacaoPedido = () => {
                 </div>
                 {/* Rodapé geral, agora com o logo do PagSeguro */}
                 <div className="confirmacao-footer" style={{ marginTop: '50px' }}>
-                    <img src={pagSeguroLogo} alt="PagSeguro" style={{ maxWidth: '450px', height: 'auto' }} />
+                    <img src={pagSeguroLogo} alt="PagSeguro" className="pagseguro-footer-logo" /> {/* Adicionei a classe aqui */}
                 </div>
             </div>
         );
@@ -269,7 +280,7 @@ const ConfirmacaoPedido = () => {
                     </Button>
                     {/* Botão para Pagamento com PagSeguro */}
                     <Button onClick={handlePagarComPagSeguro} className="pagseguro-button">
-                        {/* Você pode adicionar um ícone do PagSeguro aqui se tiver, ex: <img src={pagSeguroButtonIcon} alt="PagSeguro" className="pagseguro-button-icon" /> */}
+                        <img src={pagSeguroButtonIcon} alt="PagSeguro" className="pagseguro-button-icon" /> {/* Adicionei o ícone aqui */}
                         Pagar com PagSeguro
                     </Button>
                     <Button onClick={handleFinalizarCompra} variant="secondary">
@@ -280,7 +291,7 @@ const ConfirmacaoPedido = () => {
 
             {/* Rodapé geral, agora com o logo do PagSeguro */}
             <div className="confirmacao-footer">
-                <img src={pagSeguroLogo} alt="PagSeguro" style={{ maxWidth: '450px', height: 'auto' }} />
+                <img src={pagSeguroLogo} alt="PagSeguro" className="pagseguro-footer-logo" /> {/* Adicionei a classe aqui */}
             </div>
         </div>
     );

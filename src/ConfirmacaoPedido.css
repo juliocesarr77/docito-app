@@ -145,27 +145,26 @@
 
 .acoes-confirmacao button {
   font-family: Arial, sans-serif; /* Fonte universal */
-  padding: 10px 15px; /* Ajuste no padding para ficar semelhante ao da home */
-  border-radius: 5px; /* Ajuste na borda para ficar semelhante ao da home */
+  padding: 10px 15px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 1em; /* Ajuste no tamanho da fonte para ficar semelhante ao da home */
+  font-size: 1em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
   transition: background-color 0.3s ease;
-  border: none; /* Removendo a borda padrão dos outros botões */
+  border: none;
+  white-space: nowrap; /* Evita que o texto quebre em várias linhas */
 }
 
-.acoes-confirmacao button:first-child {
-  font-family: Arial, sans-serif; /* Fonte universal */
-  background-color: #ffe0b2; /* Amarelo claro "candy" - MANTIDO */
-  color: #bf360c; /* Marrom escuro - MANTIDO */
+.acoes-confirmacao button:first-child { /* Botão "Editar Dados" */
+  background-color: #ffe0b2; /* Amarelo claro "candy" */
+  color: #bf360c; /* Marrom escuro */
 }
 
 .acoes-confirmacao button:first-child:hover {
-  font-family: Arial, sans-serif; /* Fonte universal */
-  background-color: #ffb347; /* Laranja "candy" - MANTIDO */
+  background-color: #ffb347; /* Laranja "candy" */
   color: #fff;
 }
 
@@ -173,43 +172,36 @@
 .pagseguro-button {
   background-color: #00BFEE; /* Cor principal do PagSeguro (azul) */
   color: white;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px; /* Espaço entre o ícone e o texto */
 }
 
 .pagseguro-button:hover {
   background-color: #0099C7; /* Cor mais escura no hover */
 }
 
-/* Removido o estilo .acoes-confirmacao button:nth-child(2) se não for mais usado para InfinitePay */
-/* Você pode querer remover ou renomear .infinitypay-button-icon se não for usar um ícone no botão PagSeguro */
-/* .infinitypay-button-icon {
-  max-height: 28px;
+.pagseguro-button-icon { /* NOVA CLASSE PARA A LOGO DENTRO DO BOTÃO */
+  height: 20px; /* Tamanho da logo no botão */
   width: auto;
-} */
+  margin-right: 5px; /* Espaçamento entre a logo e o texto */
+}
 
 
-.acoes-confirmacao button:last-child {
-  font-family: Arial, sans-serif; /* Fonte universal */
+.acoes-confirmacao button:last-child { /* Botão WhatsApp */
   background-color: #25D366; /* Cor do WhatsApp */
   color: white;
 }
 
 .acoes-confirmacao button:last-child:hover {
-  font-family: Arial, sans-serif; /* Fonte universal */
   background-color: #128C7E; /* Cor do WhatsApp no hover */
 }
 
 .whatsapp-icon-confirmacao {
-  font-size: 1.4em; /* Aumentei o tamanho do ícone do WhatsApp */
+  font-size: 1.4em;
 }
 
 .info-pagamento {
   font-family: Arial, sans-serif; /* Fonte universal */
   background-color: #e0f7fa; /* Um tom de azul/verde claro suave */
-  color: #004d40; /* Um tom de verde escuro - MANTIDO (parece intencional) */
+  color: #004d40; /* Um tom de verde escuro */
   padding: 15px;
   border-radius: 6px;
   margin-top: 20px;
@@ -220,7 +212,7 @@
 
 .info-pagamento h2 {
   font-family: Arial, sans-serif; /* Fonte universal */
-  color: #00695c; /* Um tom de verde mais intenso para o título - MANTIDO (parece intencional) */
+  color: #00695c; /* Um tom de verde mais intenso para o título */
   margin-top: 0;
   margin-bottom: 10px;
   font-size: 1.2em;
@@ -239,10 +231,11 @@
   justify-content: center;
   margin-top: 30px;
   width: 100%;
+  padding-bottom: 20px; /* Adicionado para dar um pequeno espaço no final da página */
 }
 
-.confirmacao-footer img {
-  max-width: 450px; /* Ajuste o tamanho máximo da imagem conforme necessário */
+.pagseguro-footer-logo { /* NOVA CLASSE PARA A LOGO DO RODAPÉ */
+  max-width: 200px; /* Reduz drasticamente o tamanho máximo da logo */
   height: auto;
 }
 
@@ -265,7 +258,22 @@
       width: 100%;
   }
 
-  .confirmacao-footer img {
-      max-width: 90%; /* Ajusta a largura da imagem em telas menores */
+  .pagseguro-footer-logo {
+      max-width: 150px; /* Ajusta ainda mais a largura da imagem em telas muito pequenas */
+  }
+}
+
+@media (max-width: 480px) {
+  .confirmacao-container h1 {
+      font-size: 1.8em;
+  }
+  .detalhes-cliente p,
+  .detalhes-pedido p,
+  .informacoes-pagamento label,
+  .informacoes-pagamento input {
+      font-size: 0.9em;
+  }
+  .detalhes-pedido .total {
+      font-size: 1.1em;
   }
 }
