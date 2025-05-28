@@ -169,9 +169,9 @@
   color: #fff;
 }
 
-.acoes-confirmacao button:nth-child(2) {
-  font-family: Arial, sans-serif; /* Fonte universal */
-  background-color: #00c7ff; /* Cor principal da InfinityPay */
+/* ESTILO PARA O BOTÃO PAGSEGURO */
+.pagseguro-button {
+  background-color: #00BFEE; /* Cor principal do PagSeguro (azul) */
   color: white;
   display: inline-flex;
   align-items: center;
@@ -179,10 +179,17 @@
   gap: 8px; /* Espaço entre o ícone e o texto */
 }
 
-.acoes-confirmacao button:nth-child(2):hover {
-  font-family: Arial, sans-serif; /* Fonte universal */
-  background-color: #00aadd; /* Cor mais escura no hover */
+.pagseguro-button:hover {
+  background-color: #0099C7; /* Cor mais escura no hover */
 }
+
+/* Removido o estilo .acoes-confirmacao button:nth-child(2) se não for mais usado para InfinitePay */
+/* Você pode querer remover ou renomear .infinitypay-button-icon se não for usar um ícone no botão PagSeguro */
+/* .infinitypay-button-icon {
+  max-height: 28px;
+  width: auto;
+} */
+
 
 .acoes-confirmacao button:last-child {
   font-family: Arial, sans-serif; /* Fonte universal */
@@ -197,11 +204,6 @@
 
 .whatsapp-icon-confirmacao {
   font-size: 1.4em; /* Aumentei o tamanho do ícone do WhatsApp */
-}
-
-.infinitypay-button-icon {
-  max-height: 28px; /* Aumentei um pouco a altura máxima */
-  width: auto; /* Mantenha a proporção da imagem */
 }
 
 .info-pagamento {
@@ -247,23 +249,23 @@
 /* Media queries para responsividade */
 @media (max-width: 768px) {
   .confirmacao-container {
-    padding: 20px;
+      padding: 20px;
   }
 
   .confirmacao-detalhes {
-    padding: 15px;
+      padding: 15px;
   }
 
   .acoes-confirmacao {
-    flex-direction: column;
-    gap: 10px;
+      flex-direction: column;
+      gap: 10px;
   }
 
   .acoes-confirmacao button {
-    width: 100%;
+      width: 100%;
   }
 
   .confirmacao-footer img {
-    max-width: 90%; /* Ajusta a largura da imagem em telas menores */
+      max-width: 90%; /* Ajusta a largura da imagem em telas menores */
   }
 }
