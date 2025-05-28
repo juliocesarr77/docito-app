@@ -5,9 +5,10 @@ import { Button } from './components/ui/button';
 import { db } from './firebase/config';
 import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { FaWhatsapp } from 'react-icons/fa';
-// Removendo imports antigos do InfinityPay e adicionando o novo do PagSeguro
+// Removendo imports antigos do InfinityPay
 // import infinityPayLogo from './assets/infinitepay.png';
 // import infinityPayButtonIcon from './assets/Logo_InfinitePay.svg.png';
+// Adicionando o novo import da logo do PagSeguro
 import pagSeguroLogo from './assets/Logo-PagSeguro.webp'; // Certifique-se que o nome do arquivo e a extensão estão corretos
 
 const ConfirmacaoPedido = () => {
@@ -30,6 +31,10 @@ const ConfirmacaoPedido = () => {
     };
 
     const formatarItensPedido = () => {
+        // Certifique-se que clienteData.itensCarrinho existe antes de tentar mapear
+        if (!clienteData.itensCarrinho) {
+            return '';
+        }
         return clienteData.itensCarrinho.map(item => `${item.quantity} x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
     };
 
@@ -142,52 +147,32 @@ const ConfirmacaoPedido = () => {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const idFromUrl = queryParams.get('pedidoId');
-        // Parâmetros do InfinitePay (agora não mais usados para PagSeguro)
-        const transactionIdFromUrl = queryParams.get('transaction_id');
-        const orderNsuFromUrl = queryParams.get('order_nsu');
-        const slugFromUrl = queryParams.get('slug');
+        // Parâmetros do InfinitePay (AGORA REMOVIDOS COMPLETAMENTE DA LÓGICA)
+        // const transactionIdFromUrl = queryParams.get('transaction_id');
+        // const orderNsuFromUrl = queryParams.get('order_nsu');
+        // const slugFromUrl = queryParams.get('slug');
 
         const verificarEAtualizarPagamento = async () => {
-            // Lógica para PagSeguro: O webhook do PagSeguro vai atualizar o status no Firebase.
-            // Aqui, apenas exibimos a mensagem de agradecimento baseada na presença do pedidoId
-            // e assumimos que o webhook cuidará do status no Firebase.
             if (idFromUrl) {
                 setPedidoId(idFromUrl);
                 setPagamentoConcluido(true);
-                // Você pode adicionar uma chamada ao Firebase aqui para buscar o status mais recente do pedido
-                // e exibir uma mensagem mais precisa.
                 setMensagemAgradecimento('Obrigado pelo seu pedido! Verificando a confirmação do pagamento...');
-                // Opcional: Chamar uma função Netlify para buscar o status do pedido no Firebase
-                // se você não quiser depender apenas do webhook para a UI.
-                // const pedidoSnapshot = await getDoc(doc(db, 'pedidos', idFromUrl));
-                // if (pedidoSnapshot.exists()) {
-                //     const pedidoData = pedidoSnapshot.data();
-                //     if (pedidoData.pagamentoStatus === 'pago') {
-                //         setMensagemAgradecimento('Pagamento confirmado com sucesso! Seu pedido está a caminho.');
-                //     } else {
-                //         setMensagemAgradecimento('Seu pagamento está pendente ou em análise. Entraremos em contato se necessário.');
-                //     }
-                // }
-            } else if (location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento') && !pagamentoConcluido) {
+                // Você pode adicionar uma chamada ao Firebase aqui para buscar o status mais recente do pedido
+                // e exibir uma mensagem mais precisa, se o webhook do PagSeguro já tiver atualizado.
+            } else if (location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento')) {
                 // Se chegou na página de agradecimento sem um pedidoId na URL (pode ser acesso direto ou erro)
-                setPagamentoConcluido(true);
-                setMensagemAgradecimento('Obrigado pelo seu pedido! Aguardando a confirmação do pagamento.');
+                // E se ainda não está marcado como pagamento concluído
+                if (!pagamentoConcluido) {
+                    setPagamentoConcluido(true);
+                    setMensagemAgradecimento('Obrigado pelo seu pedido! Aguardando a confirmação do pagamento.');
+                }
             }
-
-            // Lógica antiga do InfinitePay:
-            // Remover ou adaptar se você ainda usa InfinitePay para algo.
-            // Se esta página é AGORA apenas para PagSeguro, esta parte do código para InfinitePay
-            // precisa ser removida ou repensada.
-            if (idFromUrl && transactionIdFromUrl && orderNsuFromUrl && slugFromUrl) {
-                console.log('Parâmetros da InfinitePay detectados na URL. Esta lógica deve ser removida se PagSeguro for o único método.');
-                // ... (sua lógica antiga do InfinitePay aqui. Recomendo remover)
-                // Se você ainda quiser suportar, precisaria de um fluxo mais complexo
-                // para diferenciar qual gateway está redirecionando.
-            }
+            // A lógica antiga do InfinitePay foi removida aqui.
         };
 
         // Chamamos a função de verificação apenas se for a página de agradecimento OU se tiver dados de cliente (primeira carga da Confirmação)
-        if (location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento') || clienteData.itensCarrinho) {
+        // ESSA É A LINHA CORRIGIDA COM OS PARÊNTESES PARA ESLINT
+        if ((location.pathname === '/agradecimento' || location.pathname.startsWith('/cliente/agradecimento')) || clienteData.itensCarrinho) {
             verificarEAtualizarPagamento();
         }
 
@@ -211,13 +196,12 @@ const ConfirmacaoPedido = () => {
         );
     }
 
-    if (!clienteData || !clienteData.itensCarrinho) {
-        // Se não houver dados de cliente e pagamentoConcluido for false, é um acesso inválido.
+    if (!clienteData || !clienteData.itensCarrinho || clienteData.itensCarrinho.length === 0) {
+        // Se não houver dados de cliente ou itens no carrinho, é um acesso inválido.
         return <div className="confirmacao-container">Erro: Dados do pedido não encontrados ou sessão expirada.</div>;
     }
 
     return (
-        // ... o restante do seu JSX original para a página de confirmação/pagamento ...
         <div style={{ backgroundColor: '#fff7f1' }}>
             <div className="confirmacao-container">
                 <div className="confirmacao-header">
