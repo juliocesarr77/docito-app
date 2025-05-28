@@ -1,90 +1,137 @@
 // netlify/functions/criar-pagamento-pagseguro.js
 
-import axios from 'axios';
+const axios = require('axios'); // Se estiver usando axios para as chamadas externas
+const { updateDoc, doc } = require('firebase/firestore'); // Se estiver usando para atualizar o pedido
+const { db } = require('../../src/firebase/config'); // Ajuste o caminho se for diferente
 
-export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Método não permitido.' });
+exports.handler = async (event, context) => {
+    // A função handler do Netlify Functions recebe (event, context)
+
+    if (event.httpMethod !== 'POST') {
+        return {
+            statusCode: 405,
+            body: JSON.stringify({ message: 'Method Not Allowed' }),
+        };
     }
-
-    const {
-        pedidoId,
-        valorTotal, // Já em centavos
-        cliente, // { nome, email, telefone } - CPF não será enviado
-        itensCarrinho, // [{ name, quantity, amount (em centavos), reference_id }]
-        redirect_url, // A URL para onde o cliente deve ser redirecionado no seu site
-    } = req.body;
-
-    // Credenciais do PagSeguro (Sandbox)
-    // Configure essas variáveis de ambiente no Netlify:
-    // PAGSEGURO_EMAIL_SANDBOX
-    // PAGSEGURO_TOKEN_SANDBOX
-    const pagseguroEmail = process.env.PAGSEGURO_EMAIL_SANDBOX;
-    const pagseguroToken = process.env.PAGSEGURO_TOKEN_SANDBOX;
-
-    if (!pagseguroEmail || !pagseguroToken) {
-        console.error('Credenciais PagSeguro Sandbox não configuradas.');
-        return res.status(500).json({ error: 'Erro de configuração do servidor. Credenciais PagSeguro faltando.' });
-    }
-
-    // URL da API de Checkout PagBank (Sandbox)
-    const pagseguroCheckoutApiUrl = 'https://sandbox.api.pagseguro.com/checkouts';
 
     try {
-        const payload = {
-            reference_id: pedidoId, // Seu ID de referência para o pedido
-            customer: {
-                name: cliente.nome,
-                email: cliente.email, // Email do cliente (coletado no seu formulário agora)
-                phone: {
-                    country: '+55',
-                    area: cliente.telefone.substring(0, 2), // Pegar DDD
-                    number: cliente.telefone.substring(2) // Pegar número
-                }
-                // tax_id (CPF) não é enviado para que o PagSeguro o colete na página deles.
-            },
-            items: itensCarrinho.map(item => ({
-                reference_id: item.id || item.reference_id, // ID do item no seu sistema
-                name: item.name,
-                quantity: item.quantity,
-                unit_amount: item.amount, // Já em centavos
-            })),
+        const { pedidoId, valorTotal, cliente, itensCarrinho, redirect_url } = JSON.parse(event.body);
 
-            // URLs de redirecionamento e notificação
-            redirect_url: redirect_url, // URL para onde o cliente volta após o pagamento
-            notification_urls: [
-                `https://effortless-sorbet-87113c.netlify.app/.netlify/functions/pagseguro-webhook` // A URL do seu webhook!
-            ],
-            // Garante que o cliente possa ajustar dados (incluindo CPF) na página do PagBank
-            customer_modifiable: true,
-        };
-
-        console.log('Enviando payload para PagBank:', JSON.stringify(payload, null, 2));
-
-        const headers = {
-            'Authorization': `Bearer ${pagseguroToken}`, // Autenticação com Bearer Token
-            'x-api-version': '2.0', // Versão da API, consulte a documentação
-            'Content-Type': 'application/json'
-        };
-
-        const pagseguroResponse = await axios.post(pagseguroCheckoutApiUrl, payload, { headers });
-
-        const checkoutId = pagseguroResponse.data.id;
-        const paymentLink = pagseguroResponse.data.links.find(link => link.rel === 'PAY').href;
-
-        if (!paymentLink) {
-            throw new Error('Link de pagamento não encontrado na resposta do PagBank.');
+        // Validar dados básicos
+        if (!pedidoId || !valorTotal || !cliente || !itensCarrinho || !redirect_url) {
+            console.error('Dados de requisição inválidos:', { pedidoId, valorTotal, cliente, itensCarrinho, redirect_url });
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ details: 'Dados do pedido, valor, cliente, itens ou URL de redirecionamento ausentes.' }),
+            };
         }
 
-        console.log(`Checkout criado no PagBank: ID=${checkoutId}, Link=${paymentLink}`);
+        const PAGSEGURO_EMAIL_SANDBOX = process.env.PAGSEGURO_EMAIL_SANDBOX;
+        const PAGSEGURO_TOKEN_SANDBOX = process.env.PAGSEGURO_TOKEN_SANDBOX;
 
-        return res.status(200).json({ paymentLink });
+        if (!PAGSEGURO_EMAIL_SANDBOX || !PAGSEGURO_TOKEN_SANDBOX) {
+            console.error('Variáveis de ambiente do PagSeguro não configuradas.');
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ details: 'Configuração do PagSeguro faltando.' }),
+            };
+        }
+
+        const pagseguroBaseUrl = 'https://ws.sandbox.pagseguro.uol.com.br/v2/checkout/'; // SandBox
+        // const pagseguroBaseUrl = 'https://ws.pagseguro.uol.com.br/v2/checkout/'; // Produção
+
+        let xmlData = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<checkout>
+    <currency>BRL</currency>
+    <reference>${pedidoId}</reference>`; // Usando o ID do pedido como referência
+
+        itensCarrinho.forEach((item, index) => {
+            xmlData += `
+    <item>
+        <id>${item.id}</id>
+        <description>${item.name}</description>
+        <amount>${(item.amount / 100).toFixed(2)}</amount> <quantity>${item.quantity}</quantity>
+    </item>`;
+        });
+
+        xmlData += `
+    <sender>
+        <name>${cliente.nome}</name>
+        <email>${PAGSEGURO_EMAIL_SANDBOX}</email> <phone>
+            <areaCode>${cliente.telefone.substring(0, 2)}</areaCode>
+            <number>${cliente.telefone.substring(2)}</number>
+        </phone>
+    </sender>
+    <redirectURL>${redirect_url}</redirectURL>
+    <notificationURL>${process.env.URL_BASE}/.netlify/functions/pagseguro-webhook</notificationURL>
+</checkout>`;
+
+        console.log('XML de requisição PagSeguro:', xmlData);
+
+        const response = await axios.post(
+            `${pagseguroBaseUrl}?email=${PAGSEGURO_EMAIL_SANDBOX}&token=${PAGSEGURO_TOKEN_SANDBOX}`,
+            xmlData,
+            {
+                headers: {
+                    'Content-Type': 'application/xml; charset=ISO-8859-1',
+                },
+            }
+        );
+
+        const xml2js = require('xml2js'); // Certifique-se de ter xml2js instalado (npm install xml2js)
+        const parser = new xml2js.Parser({ explicitArray: false });
+        const result = await parser.parseStringPromise(response.data);
+
+        console.log('Resposta PagSeguro (XML parseado):', result);
+
+        if (result.checkout && result.checkout.code) {
+            const checkoutCode = result.checkout.code;
+            const paymentLink = `${pagseguroBaseUrl}payment.html?code=${checkoutCode}`;
+
+            // Opcional: Atualizar o pedido no Firebase com o código do PagSeguro
+            // (Assumindo que db e updateDoc estão configurados corretamente)
+            // if (db && updateDoc && doc) {
+            //     await updateDoc(doc(db, 'pedidos', pedidoId), {
+            //         pagSeguroTransactionCode: checkoutCode,
+            //         pagamentoStatus: 'aguardando_pagamento_pagseguro',
+            //     });
+            // }
+
+            return {
+                statusCode: 200,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ paymentLink }),
+            };
+        } else {
+            console.error('Erro na resposta do PagSeguro:', result.errors || response.data);
+            return {
+                statusCode: 400, // Ou 500 se for um erro inesperado
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ details: 'Erro ao criar o checkout no PagSeguro.', errors: result.errors || response.data }),
+            };
+        }
 
     } catch (error) {
-        console.error('Erro ao criar pagamento PagSeguro:', error.response ? error.response.data : error.message);
-        return res.status(500).json({
-            error: 'Erro ao gerar link de pagamento PagSeguro.',
-            details: error.response ? error.response.data : error.message
-        });
+        console.error('Erro na função criar-pagamento-pagseguro:', error);
+        // Tentar capturar detalhes do erro do PagSeguro se for um erro de resposta HTTP
+        let errorMessage = 'Erro interno do servidor.';
+        if (error.response && error.response.data) {
+            try {
+                const xml2js = require('xml2js');
+                const parser = new xml2js.Parser({ explicitArray: false });
+                const errorParsed = await parser.parseStringPromise(error.response.data);
+                errorMessage = errorParsed.errors ? JSON.stringify(errorParsed.errors) : error.response.data;
+            } catch (parseError) {
+                errorMessage = error.response.data; // Não conseguiu parsear XML de erro
+            }
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+
+        return {
+            statusCode: 500,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ details: `Erro ao processar pagamento: ${errorMessage}` }),
+        };
     }
-}
+};
