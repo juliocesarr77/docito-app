@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './ConfirmacaoPedido.css';
 import { Button } from './components/ui/button';
 import { db } from './firebase/config';
-import { collection, addDoc, serverTimestamp, Timestamp, doc, updateDoc } from 'firebase/firestore'; // Adicionado 'doc', 'updateDoc'
+import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { FaWhatsapp } from 'react-icons/fa';
 import infinityPayLogo from './assets/infinitepay.png'; // Logo do rodapé
 import infinityPayButtonIcon from './assets/Logo_InfinitePay.svg.png'; // Ícone da logo para o botão
