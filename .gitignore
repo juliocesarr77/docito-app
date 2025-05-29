@@ -33,3 +33,5 @@ server/docito--doceria-firebase-adminsdk-fbsvc-9818909c5a.json # O arquivo de cr
 server/node_modules/
 server/docito--doceria-firebase-adminsdk-fbsvc-9818909c5a.json
 .env # Opcional, mas geralmente boa prática para .env que contém chaves locais
+# Local Netlify folder
+.netlify
