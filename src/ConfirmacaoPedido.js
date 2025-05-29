@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './ConfirmacaoPedido.css';
 import { Button } from './components/ui/button';
 import { db } from './firebase/config';
 import { collection, addDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { FaWhatsapp } from 'react-icons/fa'; // Mantido para o ícone, mas o botão será diferente
 
 // Não precisamos mais do logo do PagSeguro aqui, mas se quiser manter no rodapé...
 // import pagSeguroLogo from './assets/pagseguro_logo_uol.png';
@@ -14,8 +13,8 @@ const ConfirmacaoPedido = () => {
     const navigate = useNavigate();
     // Certifique-se de que clienteData e cart estão vindo corretamente do state
     const { state } = location; 
-    const clienteData = state || {}; // Assume que dados do cliente (nome, telefone, endereco, etc.) vêm daqui
-    const itensCarrinho = clienteData.itensCarrinho || []; // Pega itens do carrinho do state
+    const clienteData = useMemo(() => location.state || {}, [location.state]); // Assume que dados do cliente (nome, telefone, endereco, etc.) vêm daqui
+    const itensCarrinho = useMemo(() => clienteData.itensCarrinho || [], [clienteData.itensCarrinho]); // Pega itens do carrinho do state
 
     // Não precisamos mais desses estados para email e CEP, pois eles virão do clienteData
     // Se precisar coletar email/CEP especificamente nesta tela, me avise para readicionar.
@@ -37,14 +36,7 @@ const ConfirmacaoPedido = () => {
         if (itensCarrinho.length === 0) {
             return 'Nenhum item no carrinho.';
         }
-        return itensCarrinho.map(item => `${item.quantity} x ${item.name} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
-    }, [itensCarrinho]);
-
-    // O handleFinalizarCompra AGORA é o botão de "Confirmar Pedido"
-    const handleConfirmarPedido = async () => {
-        setLoading(true);
-        setErroConfirmacao('');
-
+  
         try {
             // 1. Chamar a Netlify Function para gerar o próximo número sequencial
             const numeroPedidoResponse = await fetch('/.netlify/functions/gerar-numero-pedido', {
