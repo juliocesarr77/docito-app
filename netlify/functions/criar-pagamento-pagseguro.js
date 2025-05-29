@@ -43,9 +43,8 @@ exports.handler = async (event, context) => {
             };
         }
 
-        const pagseguroBaseUrl = 'https://ws.sandbox.pagseguro.uol.com.br/v2/checkout/'; // SandBox
-        // Para Produção: 'https://ws.pagseguro.uol.com.br/v2/checkout/'
-
+        const pagseguroBaseUrl = 'https://ws.sandbox.pagseguro.uol.com.br/v2/checkout/';
+        
         let xmlData = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <checkout>
     <currency>BRL</currency>
@@ -65,12 +64,11 @@ exports.handler = async (event, context) => {
         let phoneAreaCode = '';
         let phoneNumber = '';
 
-        if (cleanPhoneNumber.length >= 10 && cleanPhoneNumber.length <= 11) { // Telefone com DDD + número (10 ou 11 dígitos)
+        if (cleanPhoneNumber.length >= 10 && cleanPhoneNumber.length <= 11) {
             phoneAreaCode = cleanPhoneNumber.substring(0, 2);
             phoneNumber = cleanPhoneNumber.substring(2);
         } else {
             console.warn(`Número de telefone (${cliente.telefone}) inválido ou incompleto para PagSeguro: ${cleanPhoneNumber}. Usando valores padrão.`);
-            // Usar valores padrão para evitar erro, mas o ideal é garantir que o cliente forneça um telefone válido.
             phoneAreaCode = '11';
             phoneNumber = '999999999';
         }
@@ -129,7 +127,6 @@ exports.handler = async (event, context) => {
                 body: JSON.stringify({ paymentLink }),
             };
         } else {
-            // Se o PagSeguro retornar XML de erro, ele pode vir dentro de 'errors'
             console.error('Erro na resposta do PagSeguro (sem código de checkout):', result.errors || response.data);
             const errorDetails = result.errors ? JSON.stringify(result.errors) : 'Resposta desconhecida do PagSeguro.';
             return {
