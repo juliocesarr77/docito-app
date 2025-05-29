@@ -13,7 +13,7 @@ const ConfirmacaoPedido = () => {
     const navigate = useNavigate();
     // Certifique-se de que clienteData e cart estão vindo corretamente do state
     const { state } = location; 
-    const clienteData = useMemo(() => location.state || {}, [location.state]); // Assume que dados do cliente (nome, telefone, endereco, etc.) vêm daqui
+    const clienteData = useMemo(() => state || {}, [state]); // Assume que dados do cliente (nome, telefone, endereco, etc.) vêm daqui
     const itensCarrinho = useMemo(() => clienteData.itensCarrinho || [], [clienteData.itensCarrinho]); // Pega itens do carrinho do state
 
     // Não precisamos mais desses estados para email e CEP, pois eles virão do clienteData
@@ -32,11 +32,14 @@ const ConfirmacaoPedido = () => {
         return (subtotal + (clienteData.valorFrete || 0)).toFixed(2);
     }, [itensCarrinho, clienteData.valorFrete]);
 
-    const formatarItensPedido = useCallback(() => {
-        if (itensCarrinho.length === 0) {
-            return 'Nenhum item no carrinho.';
-        }
-  
+    // A função formatarItensPedido foi removida, pois não está sendo utilizada
+    // no fluxo atual de confirmação de pedido para o cliente.
+
+    // O handleConfirmarPedido AGORA é o botão de "Confirmar Pedido"
+    const handleConfirmarPedido = async () => { // Adicionado 'async' aqui!
+        setLoading(true);
+        setErroConfirmacao('');
+
         try {
             // 1. Chamar a Netlify Function para gerar o próximo número sequencial
             const numeroPedidoResponse = await fetch('/.netlify/functions/gerar-numero-pedido', {
