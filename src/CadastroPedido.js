@@ -53,7 +53,7 @@ const CadastroPedido = () => {
       setHoraEntrega(pedidoEditar.horaEntrega || '');
     } else if (cart.length > 0) {
       const produtosCarrinho = cart.map(item => `${item.quantity || 1}x ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
-      setProduto(produtosCarrinhos);
+      setProduto(produtosCarrinho);
       const valorTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
       setValor(valorTotal.toFixed(2));
     }
