@@ -21,8 +21,10 @@ const Notificacao = ({ mensagem, tipo }) => (
 const CadastroPedido = () => {
   const [nome, setNome] = useState('');
   const [telefone, setTelefone] = useState('');
-  const [email, setEmail] = useState('');
+  // REMOVENDO O CAMPO EMAIL, POIS NÃO É MAIS COLETADO NESTA TELA
+  // const [email, setEmail] = useState('');
   const [endereco, setEndereco] = useState('');
+  const [numero, setNumero] = useState(''); // Adicionado o campo Número
   const [pontoReferencia, setPontoReferencia] = useState('');
   const [produto, setProduto] = useState('');
   const [valor, setValor] = useState('');
@@ -41,8 +43,9 @@ const CadastroPedido = () => {
     if (isEditando) {
       setNome(pedidoEditar.nome);
       setTelefone(pedidoEditar.telefone || '');
-      setEmail(pedidoEditar.email || '');
+      // setEmail(pedidoEditar.email || ''); // Removido
       setEndereco(pedidoEditar.endereco || '');
+      setNumero(pedidoEditar.numero || ''); // Carrega o número
       setPontoReferencia(pedidoEditar.pontoReferencia || '');
       setProduto(pedidoEditar.produto);
       setValor(pedidoEditar.valor.toString());
@@ -50,7 +53,7 @@ const CadastroPedido = () => {
       setHoraEntrega(pedidoEditar.horaEntrega || '');
     } else if (cart.length > 0) {
       const produtosCarrinho = cart.map(item => `${item.quantity || 1}x ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
-      setProduto(produtosCarrinho);
+      setProduto(produtosCarrinhos);
       const valorTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
       setValor(valorTotal.toFixed(2));
     }
@@ -60,13 +63,33 @@ const CadastroPedido = () => {
     e.preventDefault();
     if (loading) return;
 
-    if (!nome || !email || cart.length === 0) {
-      setNotificacao({ mensagem: 'Preencha o nome, email e adicione itens ao carrinho.', tipo: 'erro' });
-      return;
+    // --- NOVA LÓGICA DE VALIDAÇÃO ---
+    // Apenas 'nome' é obrigatório.
+    // Se não há itens no carrinho, então 'produto' e 'valor' manual são obrigatórios.
+    if (!nome) {
+        setNotificacao({ mensagem: 'Preencha o nome do cliente.', tipo: 'erro' });
+        console.log("VALIDAÇÃO: Nome vazio.");
+        return;
     }
 
-    const valorNumericoTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-    const produtosDescricao = cart.map(item => `${item.quantity || 1}x ${item.name}`).join('\n');
+    if (cart.length === 0) {
+        // Se o carrinho está vazio, verifica os campos 'Produto' e 'Valor' preenchidos manualmente
+        if (!produto || parseFloat(valor) <= 0 || isNaN(parseFloat(valor))) {
+            setNotificacao({ mensagem: 'Adicione itens ao carrinho ou preencha o produto e o valor total.', tipo: 'erro' });
+            console.log("VALIDAÇÃO: Carrinho vazio E produto/valor manual não preenchido/inválido.");
+            return;
+        }
+    }
+    // --- FIM NOVA LÓGICA DE VALIDAÇÃO ---
+
+
+    const valorNumericoTotal = cart.length > 0 ?
+      cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0) :
+      parseFloat(valor); // Usa o valor do input se o carrinho estiver vazio
+
+    const produtosDescricao = cart.length > 0 ?
+      cart.map(item => `${item.quantity || 1}x ${item.name}`).join('\n') :
+      produto; // Usa o texto do input se o carrinho estiver vazio
 
     setLoading(true);
     setNotificacao(null);
@@ -75,8 +98,9 @@ const CadastroPedido = () => {
       const clienteData = {
         nome,
         telefone,
-        email,
+        // email, // REMOVIDO: Não é mais coletado aqui
         endereco,
+        numero, // Incluído o número
         pontoReferencia,
         dataEntrega,
         horaEntrega,
@@ -100,7 +124,7 @@ const CadastroPedido = () => {
         itensCarrinho: itensCarrinhoParaEnviar,
       };
       console.log("FRONTEND: Objeto completo a ser stringificado e enviado:", dataParaEnviar);
-      console.log("FRONTEND: JSON stringificado para o body:", JSON.stringify(dataParaEnviar));
+      console.log("FRONTEND: JSON stringificado para o body FINAL:", JSON.stringify(dataParaEnviar));
       // --- FIM DOS NOVOS LOGS ---
 
       if (isEditando) {
@@ -122,7 +146,7 @@ const CadastroPedido = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(dataParaEnviar || {}), // Garante que nunca é null/undefined
+          body: JSON.stringify(dataParaEnviar), // Removi o `|| {}` pois o JSON.stringify(dataParaEnviar) agora deve ser sempre um objeto válido
         });
 
         const responseData = await response.json();
@@ -194,14 +218,15 @@ const CadastroPedido = () => {
           onChange={(e) => setTelefone(e.target.value)}
         />
 
-        <label className="cadastro-label">Email do Cliente</label>
+        {/* REMOVENDO O CAMPO EMAIL */}
+        {/* <label className="cadastro-label">Email do Cliente</label>
         <input
           className="cadastro-input"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-        />
+        /> */}
 
         <label className="cadastro-label">Endereço</label>
         <input
@@ -209,6 +234,15 @@ const CadastroPedido = () => {
           type="text"
           value={endereco}
           onChange={(e) => setEndereco(e.target.value)}
+        />
+
+        {/* Adicionando o campo Número */}
+        <label className="cadastro-label">Número</label>
+        <input
+          className="cadastro-input"
+          type="text"
+          value={numero}
+          onChange={(e) => setNumero(e.target.value)}
         />
 
         <label className="cadastro-label">Ponto de Referência</label>
@@ -228,7 +262,7 @@ const CadastroPedido = () => {
               onChange={(e) => setProduto(e.target.value)}
               placeholder="Digite os produtos separados por linha"
               rows="5"
-              required
+              required // Agora é obrigatório se o carrinho estiver vazio
             />
 
             <label className="cadastro-label">Valor (R$)</label>
@@ -238,7 +272,7 @@ const CadastroPedido = () => {
               step="0.01"
               value={valor}
               onChange={(e) => setValor(e.target.value)}
-              required
+              required // Agora é obrigatório se o carrinho estiver vazio
             />
           </>
         ) : (
