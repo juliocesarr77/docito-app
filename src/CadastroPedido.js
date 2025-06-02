@@ -1,6 +1,8 @@
+// src/CadastroPedido.js
+
 import React, { useEffect, useState, useMemo } from 'react';
 import { db } from './firebase/config';
-import { // Removendo collection, addDoc, Timestamp
+import {
   updateDoc,
   doc,
   serverTimestamp,
@@ -22,9 +24,8 @@ const CadastroPedido = () => {
   const [email, setEmail] = useState('');
   const [endereco, setEndereco] = useState('');
   const [pontoReferencia, setPontoReferencia] = useState('');
-  const [produto, setProduto] = useState(''); // Este campo será gerado a partir de itensCarrinho
-  const [valor, setValor] = useState(''); // Este campo será gerado a partir de itensCarrinho
-  // const [status, setStatus] = useState('pendente'); // Removido: status é definido no backend ou por padrão
+  const [produto, setProduto] = useState('');
+  const [valor, setValor] = useState('');
   const [dataEntrega, setDataEntrega] = useState('');
   const [horaEntrega, setHoraEntrega] = useState('');
   const [notificacao, setNotificacao] = useState(null);
@@ -43,18 +44,15 @@ const CadastroPedido = () => {
       setEmail(pedidoEditar.email || '');
       setEndereco(pedidoEditar.endereco || '');
       setPontoReferencia(pedidoEditar.pontoReferencia || '');
-      setProduto(pedidoEditar.produto); // Produto aqui deve ser o texto descritivo
+      setProduto(pedidoEditar.produto);
       setValor(pedidoEditar.valor.toString());
-      // setStatus(pedidoEditar.status || 'pendente'); // Não precisamos mais de um state para status, pode vir direto do pedidoEditar se for exibido
       setDataEntrega(pedidoEditar.dataEntrega || '');
       setHoraEntrega(pedidoEditar.horaEntrega || '');
     } else if (cart.length > 0) {
-      // Quando vem do carrinho, pré-preenche produto e valor
       const produtosCarrinho = cart.map(item => `${item.quantity || 1}x ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
       setProduto(produtosCarrinho);
       const valorTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
       setValor(valorTotal.toFixed(2));
-      // setStatus('pendente'); // Não precisamos mais de um state para status, pode ser definido na requisição
     }
   }, [isEditando, pedidoEditar, cart]);
 
@@ -93,6 +91,17 @@ const CadastroPedido = () => {
           quantity: item.quantity || 1,
       }));
 
+      // --- NOVO LOGS NO FRONTEND AQUI ---
+      console.log("FRONTEND: Dados do cliente (clienteData):", clienteData);
+      console.log("FRONTEND: Itens do carrinho (itensCarrinhoParaEnviar):", itensCarrinhoParaEnviar);
+      // O objeto que será enviado no body
+      const dataParaEnviar = {
+        clienteData: clienteData,
+        itensCarrinho: itensCarrinhoParaEnviar,
+      };
+      console.log("FRONTEND: Objeto completo a ser stringificado e enviado:", dataParaEnviar);
+      console.log("FRONTEND: JSON stringificado para o body:", JSON.stringify(dataParaEnviar));
+      // --- FIM DOS NOVOS LOGS ---
 
       if (isEditando) {
         const pedidoDocRef = doc(db, 'pedidos', pedidoEditar.id);
@@ -106,25 +115,22 @@ const CadastroPedido = () => {
           navigate('/dashboard');
         }, 1500);
       } else {
-        console.log('Enviando dados para a Netlify Function:', { clienteData, itensCarrinho: itensCarrinhoParaEnviar });
+        console.log('Enviando dados para a Netlify Function...');
 
         const response = await fetch('/.netlify/functions/gerar-numero-pedido', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            clienteData: clienteData,
-            itensCarrinho: itensCarrinhoParaEnviar,
-          }),
+          body: JSON.stringify(dataParaEnviar), // Usando a variável dataParaEnviar
         });
 
         const responseData = await response.json();
 
         if (!response.ok) {
-          setNotificacao({ 
-              mensagem: `Erro ao criar pedido: ${responseData.message || 'Verifique os logs da função.'} Detalhes: ${responseData.details || 'N/A'}`, 
-              tipo: 'erro' 
+          setNotificacao({
+              mensagem: `Erro ao criar pedido: ${responseData.message || 'Verifique os logs da função.'} Detalhes: ${responseData.details || 'N/A'}`,
+              tipo: 'erro'
           });
           setLoading(false);
           return;
