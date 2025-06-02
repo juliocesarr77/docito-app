@@ -53,7 +53,7 @@ const CadastroPedido = () => {
       setHoraEntrega(pedidoEditar.horaEntrega || '');
     } else if (cart.length > 0) {
       const produtosCarrinho = cart.map(item => `${item.quantity || 1}x ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
-      setProduto(produtosCarrinho); // Corrigido 'produtosCarrinhos' para 'produtosCarrinho'
+      setProduto(produtosCarrinho);
       const valorTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
       setValor(valorTotal.toFixed(2));
     }
@@ -117,12 +117,15 @@ const CadastroPedido = () => {
         itensCarrinho: itensCarrinhoParaEnviar,
       };
 
-      console.log("CADASTRO: Dados do cliente (clienteData) ANTES da navegação:", clienteData);
-      console.log("CADASTRO: Itens do carrinho (itensCarrinhoParaEnviar) ANTES da navegação:", itensCarrinhoParaEnviar);
-      console.log("CADASTRO: Objeto completo a ser enviado via state para ConfirmacaoPedido:", dataParaEnviar);
+      // --- NOVOS LOGS DE DEPURACAO AQUI ---
+      console.log("DEBUG-CADASTRO: Conteúdo final de clienteData:", clienteData);
+      console.log("DEBUG-CADASTRO: Conteúdo final de itensCarrinhoParaEnviar:", itensCarrinhoParaEnviar);
+      console.log("DEBUG-CADASTRO: dataParaEnviar (o objeto que será passado para ConfirmacaoPedido):", dataParaEnviar);
+      // --- FIM NOVOS LOGS DE DEPURACAO ---
 
 
       if (isEditando) {
+        // Lógica de edição de pedido (esta parte continua a mesma)
         const pedidoDocRef = doc(db, 'pedidos', pedidoEditar.id);
         await updateDoc(pedidoDocRef, {
             ...clienteData,
@@ -134,19 +137,18 @@ const CadastroPedido = () => {
           navigate('/dashboard'); // Redireciona para o dashboard após edição
         }, 1500);
       } else {
-        // --- AQUI É O PONTO CHAVE DA CORREÇÃO ---
-        // EM VEZ DE FAZER O FETCH PARA A NETLIFY FUNCTION AQUI,
-        // NÓS APENAS NAVEGAMOS PARA A PÁGINA DE CONFIRMAÇÃO, PASSANDO OS DADOS.
+        // --- ESTE É O PONTO CRÍTICO: SOMENTE NAVEGA PARA A CONFIRMAÇÃO, NÃO FAZ O FETCH AQUI ---
         console.log('CADASTRO: Navegando para ConfirmacaoPedido com os dados...');
-        navigate('/cliente/confirmacao', { state: dataParaEnviar }); // <<-- CORREÇÃO AQUI!
+        navigate('/cliente/confirmacao', { state: dataParaEnviar }); // <<-- CORREÇÃO DEFINITIVA AQUI!
       }
     } catch (error) {
       console.error('Erro ao processar pedido ou navegar:', error);
       setNotificacao({ mensagem: `Erro ao processar ou navegar: ${error.message}.`, tipo: 'erro' });
+      setLoading(false); // Desativa loading em caso de erro
     } finally {
-        // O loading aqui só será desativado se não houver navegação
-        // Ou em caso de erro. Se houver navegação, o novo componente vai lidar com o loading.
-        if (isEditando || notificacao) { // Se estiver editando ou se houver uma notificação (erro)
+        // O loading aqui só será desativado se for um caso de edição ou erro.
+        // Em caso de navegação para ConfirmacaoPedido, o loading será gerenciado lá.
+        if (isEditando || notificacao) {
             setLoading(false);
         }
     }
