@@ -1,12 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { db } from './firebase/config'; // Ajuste o caminho se necessário
-import {
-  collection,
-  addDoc,
+import { db } from './firebase/config';
+import { // Removendo collection, addDoc, Timestamp
   updateDoc,
   doc,
   serverTimestamp,
-  Timestamp,
 } from 'firebase/firestore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -27,7 +24,7 @@ const CadastroPedido = () => {
   const [pontoReferencia, setPontoReferencia] = useState('');
   const [produto, setProduto] = useState(''); // Este campo será gerado a partir de itensCarrinho
   const [valor, setValor] = useState(''); // Este campo será gerado a partir de itensCarrinho
-  const [status, setStatus] = useState('pendente');
+  // const [status, setStatus] = useState('pendente'); // Removido: status é definido no backend ou por padrão
   const [dataEntrega, setDataEntrega] = useState('');
   const [horaEntrega, setHoraEntrega] = useState('');
   const [notificacao, setNotificacao] = useState(null);
@@ -48,7 +45,7 @@ const CadastroPedido = () => {
       setPontoReferencia(pedidoEditar.pontoReferencia || '');
       setProduto(pedidoEditar.produto); // Produto aqui deve ser o texto descritivo
       setValor(pedidoEditar.valor.toString());
-      setStatus(pedidoEditar.status || 'pendente');
+      // setStatus(pedidoEditar.status || 'pendente'); // Não precisamos mais de um state para status, pode vir direto do pedidoEditar se for exibido
       setDataEntrega(pedidoEditar.dataEntrega || '');
       setHoraEntrega(pedidoEditar.horaEntrega || '');
     } else if (cart.length > 0) {
@@ -57,7 +54,7 @@ const CadastroPedido = () => {
       setProduto(produtosCarrinho);
       const valorTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
       setValor(valorTotal.toFixed(2));
-      setStatus('pendente');
+      // setStatus('pendente'); // Não precisamos mais de um state para status, pode ser definido na requisição
     }
   }, [isEditando, pedidoEditar, cart]);
 
@@ -65,12 +62,11 @@ const CadastroPedido = () => {
     e.preventDefault();
     if (loading) return;
 
-    if (!nome || !email || cart.length === 0) { // Agora validamos o carrinho diretamente
+    if (!nome || !email || cart.length === 0) {
       setNotificacao({ mensagem: 'Preencha o nome, email e adicione itens ao carrinho.', tipo: 'erro' });
       return;
     }
 
-    // O valor total e a descrição do produto serão calculados a partir do 'cart'
     const valorNumericoTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
     const produtosDescricao = cart.map(item => `${item.quantity || 1}x ${item.name}`).join('\n');
 
@@ -78,7 +74,6 @@ const CadastroPedido = () => {
     setNotificacao(null);
 
     try {
-      // Dados do cliente, conforme esperado pela Netlify Function (clienteData)
       const clienteData = {
         nome,
         telefone,
@@ -87,39 +82,30 @@ const CadastroPedido = () => {
         pontoReferencia,
         dataEntrega,
         horaEntrega,
-        // Adicionando valor e produto aqui para salvar no documento raiz do pedido também,
-        // mas o principal é itensCarrinho
         valorTotal: valorNumericoTotal,
         produtoDescricao: produtosDescricao,
       };
 
-      // Itens do carrinho para serem enviados, conforme esperado pela Netlify Function (itensCarrinho)
-      // Certifique-se de que cada item do carrinho tenha as propriedades esperadas pela função,
-      // como id, nome, preco, quantidade.
       const itensCarrinhoParaEnviar = cart.map(item => ({
           id: item.id,
           name: item.name,
           price: item.price,
           quantity: item.quantity || 1,
-          // Adicione outras propriedades dos itens do carrinho que você queira salvar no Firestore
       }));
 
 
       if (isEditando) {
-        // Lógica de edição (permanece no Firebase diretamente, não passa pela Netlify Function)
         const pedidoDocRef = doc(db, 'pedidos', pedidoEditar.id);
         await updateDoc(pedidoDocRef, {
             ...clienteData,
-            itensCarrinho: itensCarrinhoParaEnviar, // Atualiza também os itens do carrinho se necessário
-            updatedAt: serverTimestamp(), // Adiciona um timestamp de atualização
+            itensCarrinho: itensCarrinhoParaEnviar,
+            updatedAt: serverTimestamp(),
         });
         setNotificacao({ mensagem: 'Pedido atualizado com sucesso!', tipo: 'sucesso' });
         setTimeout(() => {
           navigate('/dashboard');
         }, 1500);
       } else {
-        // Lógica de novo pedido:
-        // 1. Chamar a Netlify Function para gerar o próximo número sequencial E salvar o pedido completo
         console.log('Enviando dados para a Netlify Function:', { clienteData, itensCarrinho: itensCarrinhoParaEnviar });
 
         const response = await fetch('/.netlify/functions/gerar-numero-pedido', {
@@ -127,16 +113,15 @@ const CadastroPedido = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ // AGORA ENVIAMOS OS DADOS COMPLETOS!
+          body: JSON.stringify({
             clienteData: clienteData,
             itensCarrinho: itensCarrinhoParaEnviar,
           }),
         });
 
-        const responseData = await response.json(); // Pega a resposta JSON da função
+        const responseData = await response.json();
 
         if (!response.ok) {
-          // Se a resposta não for OK (status 4xx ou 5xx)
           setNotificacao({ 
               mensagem: `Erro ao criar pedido: ${responseData.message || 'Verifique os logs da função.'} Detalhes: ${responseData.details || 'N/A'}`, 
               tipo: 'erro' 
@@ -152,7 +137,6 @@ const CadastroPedido = () => {
 
         setNotificacao({ mensagem: `Pedido ${numeroPedidoCliente} criado! Redirecionando para a confirmação...`, tipo: 'sucesso' });
 
-        // Redirecionar para a página de agradecimento
         navigate(`/agradecimento?pedidoId=${pedidoIdFirestore}&numeroPedido=${numeroPedidoCliente}`);
       }
     } catch (error) {
@@ -160,9 +144,7 @@ const CadastroPedido = () => {
       setNotificacao({ mensagem: `Erro ao salvar ou iniciar processo: ${error.message}.`, tipo: 'erro' });
       setLoading(false);
     } finally {
-      // Para novos pedidos, o navigate já "encerra" a execução visualmente
-      // Para edição, garantimos que o loading seja false
-      if (isEditando && !notificacao) { // Apenas se não houver notificação de erro ou sucesso ainda
+      if (isEditando && !notificacao) {
         setLoading(false);
       }
     }
@@ -231,8 +213,6 @@ const CadastroPedido = () => {
           onChange={(e) => setPontoReferencia(e.target.value)}
         />
 
-        {/* Produto e Valor agora são apenas para exibição/edição se vierem de um pedido existente */}
-        {/* Se o pedido vem do carrinho, esses campos não são editáveis diretamente aqui */}
         {cart.length === 0 ? (
           <>
             <label className="cadastro-label">Produto</label>
@@ -242,7 +222,7 @@ const CadastroPedido = () => {
               onChange={(e) => setProduto(e.target.value)}
               placeholder="Digite os produtos separados por linha"
               rows="5"
-              required // Mantém o required se não for via carrinho
+              required
             />
 
             <label className="cadastro-label">Valor (R$)</label>
@@ -252,7 +232,7 @@ const CadastroPedido = () => {
               step="0.01"
               value={valor}
               onChange={(e) => setValor(e.target.value)}
-              required // Mantém o required se não for via carrinho
+              required
             />
           </>
         ) : (
@@ -260,16 +240,16 @@ const CadastroPedido = () => {
             <label className="cadastro-label">Produtos do Carrinho</label>
             <textarea
               className="cadastro-input"
-              value={produto} // `produto` já foi preenchido no useEffect
-              readOnly // Torna o campo somente leitura
+              value={produto}
+              readOnly
               rows="5"
             />
             <label className="cadastro-label">Valor Total do Pedido (R$)</label>
             <input
               className="cadastro-input"
-              type="text" // Pode ser text agora que é readonly
-              value={valor} // `valor` já foi preenchido no useEffect
-              readOnly // Torna o campo somente leitura
+              type="text"
+              value={valor}
+              readOnly
             />
           </>
         )}
