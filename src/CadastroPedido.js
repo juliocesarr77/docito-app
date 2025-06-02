@@ -122,7 +122,7 @@ const CadastroPedido = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(dataParaEnviar), // Usando a variável dataParaEnviar
+          body: JSON.stringify(dataParaEnviar || {}), // Garante que nunca é null/undefined
         });
 
         const responseData = await response.json();
