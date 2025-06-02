@@ -1,15 +1,13 @@
 // netlify/functions/gerar-numero-pedido.js
 
 // Importa as bibliotecas necessárias
-// Vamos tentar importar o pacote completo firebase-admin primeiro, e depois acessar os módulos.
-// Isso às vezes pode contornar problemas de carregamento de módulos aninhados.
 const admin = require('firebase-admin');
 
 // Variáveis para armazenar as instâncias inicializadas (para reuso)
 let db;
 let firebaseInitialized = false; // Flag para controlar a inicialização única
 
-// Função assíncrona para inicializar Firebase
+// Função assínrona para inicializar Firebase
 async function initializeFirebase() {
     console.log("--- INICIANDO initializeFirebase ---");
 
@@ -20,12 +18,16 @@ async function initializeFirebase() {
         throw new Error("Falha ao carregar o módulo 'firebase-admin'.");
     }
     
-    // Teste 2: Verifica se initializeApp e cert existem dentro de admin.app
-    console.log("admin.app:", typeof admin.app);
-    if (typeof admin.app !== 'object' || admin.app === null || typeof admin.app.initializeApp !== 'function' || typeof admin.credential.cert !== 'function') {
-        console.error("ERRO CRÍTICO: admin.app ou admin.credential.cert não são válidos. Módulo 'firebase-admin' pode estar corrompido ou incompleto.");
-        throw new Error("Dependências do Firebase Admin SDK não carregadas corretamente.");
-    }
+    // Teste 2: Verifica a natureza de admin.app e admin.credential.cert
+    // O log mostra admin.app: function, o que significa que precisamos chamar admin.app()
+    // para obter a interface do app.
+    console.log("admin.app (antes da chamada):", typeof admin.app); // Isso ainda deve ser 'function'
+    console.log("admin.credential.cert:", typeof admin.credential.cert);
+    
+    // CORREÇÃO AQUI: Não é mais admin.app.initializeApp, e sim admin.initializeApp
+    // Se admin.app é uma função, a inicialização pode ser diretamente em admin.initializeApp
+    // ou se admin.app é a forma de acessar a "app factory".
+    // Pela documentação do firebase-admin v10+, a forma de inicializar é diretamente `admin.initializeApp`.
 
     if (firebaseInitialized) {
         console.log("Firebase já inicializado (via hot start). Retornando.");
@@ -59,23 +61,20 @@ async function initializeFirebase() {
         }
         console.log("Credenciais parseadas e verificadas: 'private_key' presente.");
 
-        // Inicializar Firebase Admin SDK usando admin.app e admin.credential
-        // Esta é a parte CRÍTICA. O método initializeApp()
-        // por si só já verifica se um app padrão já foi inicializado.
-        // Se já estiver, ele retorna a instância existente sem erro.
-        // Se não, ele inicializa um novo.
-        console.log("Tentando inicializar o aplicativo Firebase...");
-        const app = admin.app.initializeApp({
+        // Inicializar Firebase Admin SDK
+        // CORREÇÃO: O initializeApp e cert são acessados diretamente do objeto 'admin' global.
+        console.log("Tentando inicializar o aplicativo Firebase diretamente via admin.initializeApp...");
+        const app = admin.initializeApp({ // AQUI ESTÁ A MUDANÇA PRINCIPAL
             credential: admin.credential.cert(serviceAccountCredentials),
         });
         console.log("Aplicativo Firebase inicializado com sucesso.");
 
-        db = admin.firestore(app); // Passa a instância do app para getFirestore (agora admin.firestore)
+        // CORREÇÃO: getFirestore é acessado diretamente de admin.firestore
+        db = admin.firestore(app); // AQUI ESTÁ A OUTRA MUDANÇA PRINCIPAL
         console.log("Firebase Firestore inicializado com sucesso. Instância 'db' disponível.");
         firebaseInitialized = true; // Marca como inicializado
 
     } catch (e) {
-        // Loga o erro detalhado e relança para que o handler possa tratá-lo
         console.error("!!! ERRO CATASTRÓFICO na inicialização do Firebase (initializeFirebase):", e.message);
         console.error("STACK TRACE COMPLETO:", e.stack);
         firebaseInitialized = false; // Garante que será tentado novamente se falhar
@@ -89,27 +88,22 @@ async function initializeFirebase() {
 exports.handler = async (event, context) => {
     console.log("--- INICIANDO handler gerar-numero-pedido ---");
 
-    // 1. Verifica o método HTTP
     if (event.httpMethod !== 'POST') {
         console.log("Método HTTP não permitido:", event.httpMethod);
         return { statusCode: 405, body: JSON.stringify({ message: 'Método não permitido.' }) };
     }
 
     try {
-        // 2. Garante que o Firebase esteja inicializado.
-        // Qualquer erro na inicialização será capturado por este try/catch externo.
         console.log("Chamando initializeFirebase...");
         await initializeFirebase();
         console.log("initializeFirebase retornou.");
 
-        // Verificação final para garantir que `db` está disponível
         if (!db) {
             console.error("!!! ERRO CRÍTICO: Instância 'db' do Firebase Firestore não foi inicializada corretamente.");
             throw new Error("Firebase Firestore não foi inicializado corretamente após `initializeFirebase`.");
         }
         console.log("Instância do Firestore (db) verificada.");
 
-        // 3. Parseia o corpo da requisição para obter os dados do pedido do frontend
         let requestBody;
         try {
             console.log("Tentando parsear o corpo da requisição...");
@@ -130,7 +124,6 @@ exports.handler = async (event, context) => {
 
         let novoNumeroPedido;
 
-        // 4. Lógica para gerar o número sequencial no Firestore usando uma transação
         console.log("Iniciando lógica de transação para o contador de pedidos...");
         const counterRef = db.collection('counters').doc('pedidoIdCounter');
 
@@ -160,7 +153,6 @@ exports.handler = async (event, context) => {
 
         console.log(`Número de pedido sequencial gerado e confirmado no Firestore: ${novoNumeroPedido}`);
 
-        // 5. Lógica para salvar o pedido completo no Firestore
         console.log("Iniciando salvamento do pedido no Firestore...");
         const pedidoParaSalvar = {
             ...requestBody.clienteData,
@@ -174,7 +166,6 @@ exports.handler = async (event, context) => {
         const docRef = await db.collection('pedidos').add(pedidoParaSalvar);
         console.log(`Pedido salvo no Firestore com ID: ${docRef.id}`);
 
-        // 6. Retorna o número do pedido e o ID do Firestore para o frontend
         console.log("Retornando resposta de sucesso.");
         return {
             statusCode: 200,
@@ -183,7 +174,6 @@ exports.handler = async (event, context) => {
         };
 
     } catch (error) {
-        // Captura e loga erros gerais da função
         console.error('!!! ERRO FATAL NA FUNÇÃO GERAR-NUMERO-PEDIDO:', error.message);
         console.error('STACK TRACE COMPLETO DO ERRO FATAL:', error.stack);
         return {
@@ -192,7 +182,6 @@ exports.handler = async (event, context) => {
             body: JSON.stringify({
                 message: 'Erro interno ao processar o pedido. Por favor, tente novamente.',
                 details: error.message,
-                //stack: error.stack // Opcional: descomente em DEV para depuração profunda, mas remova em produção
             }),
         };
     } finally {
