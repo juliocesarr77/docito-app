@@ -1,61 +1,40 @@
 // netlify/functions/gerar-numero-pedido.js
 
 // Importa as bibliotecas necessárias
-const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { initializeApp, cert } = require('firebase-admin/app');
-const { getFirestore, FieldValue } = require('firebase-admin/firestore'); // Importa FieldValue também
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 
 // Variáveis para armazenar as instâncias inicializadas (para reuso)
 let db;
-let docSheet;
 let initialized = false; // Flag para controlar a inicialização única
 
-// Função assíncrona para inicializar Firebase e Google Sheets
-async function initializeServices() {
-    // Se já inicializado, apenas retorna (otimização para "hot starts")
+// Função assíncrona para inicializar Firebase
+async function initializeFirebase() {
     if (initialized) {
-        console.log("Serviços já inicializados.");
+        console.log("Firebase já inicializado.");
         return;
     }
 
-    console.log("Iniciando serviços...");
+    console.log("Iniciando Firebase...");
 
     try {
-        // As credenciais vêm de GOOGLE_SERVICE_ACCOUNT_CREDENTIALS
         const serviceAccountCredentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS);
 
-        // 1. Inicializar Firebase Admin SDK
-        // Verifica se o app do Firebase já foi inicializado para evitar erro de reinicialização
-        if (!initializeApp.apps.length) { // Usando .apps.length para verificar se há apps inicializados
+        // Inicializar Firebase Admin SDK
+        // Acessa initializeApp.apps para verificar se já foi inicializado
+        if (!initializeApp.apps.length) { 
             initializeApp({
                 credential: cert(serviceAccountCredentials),
             });
         }
         db = getFirestore();
-        console.log("Firebase Admin SDK inicializado.");
-
-        // 2. Inicializar Google Spreadsheet
-        const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-        if (!spreadsheetId) {
-            throw new Error("Variável de ambiente GOOGLE_SHEET_ID não está definida.");
-        }
-
-        docSheet = new GoogleSpreadsheet(spreadsheetId);
-        // Autentica com a conta de serviço
-        await docSheet.useServiceAccountAuth(serviceAccountCredentials);
-        // Carrega as informações da planilha (necessário antes de acessar as abas)
-        await docSheet.loadInfo(); 
-        console.log("Google Spreadsheet inicializado e autenticado. Título da Planilha:", docSheet.title);
-
-        // Marca como inicializado com sucesso
+        console.log("Firebase Admin SDK inicializado com sucesso.");
         initialized = true;
-        console.log("Serviços inicializados com sucesso.");
 
     } catch (e) {
-        // Loga o erro detalhado e relança para que o handler possa tratá-lo
-        console.error("Erro na inicialização dos serviços (initializeServices):", e.message, e.stack);
-        initialized = false; // Garante que será tentado novamente se falhar
-        throw new Error(`Falha na inicialização dos serviços: ${e.message}`);
+        console.error("Erro na inicialização do Firebase (initializeFirebase):", e.message, e.stack);
+        initialized = false;
+        throw new Error(`Falha na inicialização do Firebase: ${e.message}`);
     }
 }
 
@@ -63,21 +42,16 @@ async function initializeServices() {
 exports.handler = async (event, context) => {
     console.log("Função gerar-numero-pedido acionada.");
 
-    // Verifica o método HTTP
     if (event.httpMethod !== 'POST') {
         return { statusCode: 405, body: JSON.stringify({ message: 'Método não permitido.' }) };
     }
 
     try {
-        // Garante que os serviços estejam inicializados antes de prosseguir
-        await initializeServices();
+        // Garante que o Firebase esteja inicializado
+        await initializeFirebase();
 
-        // Verifica se os serviços estão realmente prontos
         if (!db) {
             throw new Error("Firebase Firestore não foi inicializado corretamente.");
-        }
-        if (!docSheet) {
-            throw new Error("Google Spreadsheet não foi inicializado corretamente.");
         }
 
         // Parseia o corpo da requisição para obter os dados do pedido do frontend
@@ -96,47 +70,52 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // --- Lógica para o Google Sheets (gerar número sequencial) ---
-        const sheet = docSheet.sheetsByIndex[0]; // Assume que você quer a primeira aba (índice 0)
-                                                 // Se você tiver uma aba específica para o contador,
-                                                 // use: const sheet = docSheet.sheetsByTitle['NomeDaSuaAbaContador'];
-        if (!sheet) {
-            throw new Error("Primeira aba da planilha não encontrada. Verifique o índice ou título.");
-        }
+        let novoNumeroPedido;
 
-        // Carrega a célula onde o contador está (A1 na sua configuração)
-        await sheet.loadCells('A1'); 
-        const cell = sheet.getCellByA1('A1');
+        // --- Lógica para gerar o número sequencial no Firestore usando uma transação ---
+        const counterRef = db.collection('counters').doc('pedidoIdCounter');
 
-        // Lê o valor atual da célula A1. Se for nulo/vazio, inicia em 1132 para que o próximo seja 1133.
-        let currentCounter = parseInt(cell.value || '1132'); 
-        currentCounter++; // Incrementa para o próximo número sequencial
+        await db.runTransaction(async (transaction) => {
+            const counterDoc = await transaction.get(counterRef);
 
-        // Atualiza a célula A1 com o novo contador
-        cell.value = currentCounter;
-        await sheet.saveCells(); // Salva as alterações na planilha
+            if (!counterDoc.exists) {
+                // Se o documento do contador não existir, cria-o com o valor inicial
+                // ou ajusta conforme sua necessidade
+                novoNumeroPedido = 1133; 
+                transaction.set(counterRef, { currentNumber: novoNumeroPedido });
+                console.log("Contador de pedido inicializado no Firestore.");
+            } else {
+                let currentNumber = counterDoc.data().currentNumber;
+                if (typeof currentNumber !== 'number') {
+                    // Lidar com o caso de currentNumber não ser um número
+                    console.warn("currentNumber no Firestore não é um número. Reiniciando contador.");
+                    currentNumber = 1132; 
+                }
+                novoNumeroPedido = currentNumber + 1;
+                transaction.update(counterRef, { currentNumber: novoNumeroPedido });
+            }
+        });
 
-        console.log(`Número de pedido sequencial gerado: ${currentCounter}`);
+        console.log(`Número de pedido sequencial gerado no Firestore: ${novoNumeroPedido}`);
 
-        // --- Lógica para o Firebase (salvar o pedido completo) ---
+        // --- Lógica para salvar o pedido completo no Firestore ---
         const pedidoParaSalvar = {
-            ...requestBody.clienteData, // Dados do cliente vindo do frontend
-            itensCarrinho: requestBody.itensCarrinho, // Itens do carrinho vindo do frontend
-            numeroPedido: currentCounter, // O número sequencial gerado
-            status: 'pendente', // Status inicial do pedido
-            pagamentoStatus: 'aguardando_contato', // Para o fluxo do WhatsApp
-            createdAt: FieldValue.serverTimestamp(), // Timestamp do servidor Firestore
-            // Adicione outros campos necessários aqui
+            ...requestBody.clienteData,
+            itensCarrinho: requestBody.itensCarrinho,
+            numeroPedido: novoNumeroPedido, // O número sequencial gerado pelo Firestore
+            status: 'pendente',
+            pagamentoStatus: 'aguardando_contato',
+            createdAt: FieldValue.serverTimestamp(),
         };
 
         const docRef = await db.collection('pedidos').add(pedidoParaSalvar);
         console.log(`Pedido salvo no Firestore com ID: ${docRef.id}`);
 
-        // Retorna o número do pedido para o frontend
+        // Retorna o número do pedido e o ID do Firestore para o frontend
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ numeroPedido: currentCounter, pedidoIdFirestore: docRef.id }),
+            body: JSON.stringify({ numeroPedido: novoNumeroPedido, pedidoIdFirestore: docRef.id }),
         };
 
     } catch (error) {
@@ -145,7 +124,7 @@ exports.handler = async (event, context) => {
             statusCode: 500,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-                message: 'Erro interno ao gerar número do pedido e salvar.', 
+                message: 'Erro interno ao processar o pedido.', 
                 details: error.message 
             }),
         };
