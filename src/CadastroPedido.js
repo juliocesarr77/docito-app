@@ -53,7 +53,7 @@ const CadastroPedido = () => {
       setHoraEntrega(pedidoEditar.horaEntrega || '');
     } else if (cart.length > 0) {
       const produtosCarrinho = cart.map(item => `${item.quantity || 1}x ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
-      setProduto(produtosCarrinho);
+      setProduto(produtosCarrinho); // Corrigido 'produtosCarrinhos' para 'produtosCarrinho'
       const valorTotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
       setValor(valorTotal.toFixed(2));
     }
@@ -63,9 +63,7 @@ const CadastroPedido = () => {
     e.preventDefault();
     if (loading) return;
 
-    // --- NOVA LÓGICA DE VALIDAÇÃO ---
-    // Apenas 'nome' é obrigatório.
-    // Se não há itens no carrinho, então 'produto' e 'valor' manual são obrigatórios.
+    // --- LÓGICA DE VALIDAÇÃO ---
     if (!nome) {
         setNotificacao({ mensagem: 'Preencha o nome do cliente.', tipo: 'erro' });
         console.log("VALIDAÇÃO: Nome vazio.");
@@ -80,8 +78,7 @@ const CadastroPedido = () => {
             return;
         }
     }
-    // --- FIM NOVA LÓGICA DE VALIDAÇÃO ---
-
+    // --- FIM LÓGICA DE VALIDAÇÃO ---
 
     const valorNumericoTotal = cart.length > 0 ?
       cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0) :
@@ -98,9 +95,8 @@ const CadastroPedido = () => {
       const clienteData = {
         nome,
         telefone,
-        // email, // REMOVIDO: Não é mais coletado aqui
         endereco,
-        numero, // Incluído o número
+        numero,
         pontoReferencia,
         dataEntrega,
         horaEntrega,
@@ -115,17 +111,16 @@ const CadastroPedido = () => {
           quantity: item.quantity || 1,
       }));
 
-      // --- NOVO LOGS NO FRONTEND AQUI ---
-      console.log("FRONTEND: Dados do cliente (clienteData):", clienteData);
-      console.log("FRONTEND: Itens do carrinho (itensCarrinhoParaEnviar):", itensCarrinhoParaEnviar);
-      // O objeto que será enviado no body
+      // Objeto completo a ser enviado para a página de confirmação
       const dataParaEnviar = {
         clienteData: clienteData,
         itensCarrinho: itensCarrinhoParaEnviar,
       };
-      console.log("FRONTEND: Objeto completo a ser stringificado e enviado:", dataParaEnviar);
-      console.log("FRONTEND: JSON stringificado para o body FINAL:", JSON.stringify(dataParaEnviar));
-      // --- FIM DOS NOVOS LOGS ---
+
+      console.log("CADASTRO: Dados do cliente (clienteData) ANTES da navegação:", clienteData);
+      console.log("CADASTRO: Itens do carrinho (itensCarrinhoParaEnviar) ANTES da navegação:", itensCarrinhoParaEnviar);
+      console.log("CADASTRO: Objeto completo a ser enviado via state para ConfirmacaoPedido:", dataParaEnviar);
+
 
       if (isEditando) {
         const pedidoDocRef = doc(db, 'pedidos', pedidoEditar.id);
@@ -136,47 +131,24 @@ const CadastroPedido = () => {
         });
         setNotificacao({ mensagem: 'Pedido atualizado com sucesso!', tipo: 'sucesso' });
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/dashboard'); // Redireciona para o dashboard após edição
         }, 1500);
       } else {
-        console.log('Enviando dados para a Netlify Function...');
-
-        const response = await fetch('/.netlify/functions/gerar-numero-pedido', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataParaEnviar), // Removi o `|| {}` pois o JSON.stringify(dataParaEnviar) agora deve ser sempre um objeto válido
-        });
-
-        const responseData = await response.json();
-
-        if (!response.ok) {
-          setNotificacao({
-              mensagem: `Erro ao criar pedido: ${responseData.message || 'Verifique os logs da função.'} Detalhes: ${responseData.details || 'N/A'}`,
-              tipo: 'erro'
-          });
-          setLoading(false);
-          return;
-        }
-
-        const numeroPedidoCliente = responseData.numeroPedido;
-        const pedidoIdFirestore = responseData.pedidoIdFirestore;
-
-        console.log('Pedido criado com sucesso! Número sequencial:', numeroPedidoCliente, 'ID Firestore:', pedidoIdFirestore);
-
-        setNotificacao({ mensagem: `Pedido ${numeroPedidoCliente} criado! Redirecionando para a confirmação...`, tipo: 'sucesso' });
-
-        navigate(`/agradecimento?pedidoId=${pedidoIdFirestore}&numeroPedido=${numeroPedidoCliente}`);
+        // --- AQUI É O PONTO CHAVE DA CORREÇÃO ---
+        // EM VEZ DE FAZER O FETCH PARA A NETLIFY FUNCTION AQUI,
+        // NÓS APENAS NAVEGAMOS PARA A PÁGINA DE CONFIRMAÇÃO, PASSANDO OS DADOS.
+        console.log('CADASTRO: Navegando para ConfirmacaoPedido com os dados...');
+        navigate('/cliente/confirmacao', { state: dataParaEnviar }); // <<-- CORREÇÃO AQUI!
       }
     } catch (error) {
-      console.error('Erro ao salvar pedido ou iniciar processo:', error);
-      setNotificacao({ mensagem: `Erro ao salvar ou iniciar processo: ${error.message}.`, tipo: 'erro' });
-      setLoading(false);
+      console.error('Erro ao processar pedido ou navegar:', error);
+      setNotificacao({ mensagem: `Erro ao processar ou navegar: ${error.message}.`, tipo: 'erro' });
     } finally {
-      if (isEditando && !notificacao) {
-        setLoading(false);
-      }
+        // O loading aqui só será desativado se não houver navegação
+        // Ou em caso de erro. Se houver navegação, o novo componente vai lidar com o loading.
+        if (isEditando || notificacao) { // Se estiver editando ou se houver uma notificação (erro)
+            setLoading(false);
+        }
     }
   };
 
@@ -218,15 +190,7 @@ const CadastroPedido = () => {
           onChange={(e) => setTelefone(e.target.value)}
         />
 
-        {/* REMOVENDO O CAMPO EMAIL */}
-        {/* <label className="cadastro-label">Email do Cliente</label>
-        <input
-          className="cadastro-input"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /> */}
+        {/* REMOVIDO O CAMPO EMAIL */}
 
         <label className="cadastro-label">Endereço</label>
         <input
@@ -236,7 +200,6 @@ const CadastroPedido = () => {
           onChange={(e) => setEndereco(e.target.value)}
         />
 
-        {/* Adicionando o campo Número */}
         <label className="cadastro-label">Número</label>
         <input
           className="cadastro-input"
@@ -262,7 +225,7 @@ const CadastroPedido = () => {
               onChange={(e) => setProduto(e.target.value)}
               placeholder="Digite os produtos separados por linha"
               rows="5"
-              required // Agora é obrigatório se o carrinho estiver vazio
+              required
             />
 
             <label className="cadastro-label">Valor (R$)</label>
@@ -272,7 +235,7 @@ const CadastroPedido = () => {
               step="0.01"
               value={valor}
               onChange={(e) => setValor(e.target.value)}
-              required // Agora é obrigatório se o carrinho estiver vazio
+              required
             />
           </>
         ) : (
@@ -310,7 +273,7 @@ const CadastroPedido = () => {
         />
 
         <Button type="submit" className="cadastro-botao" disabled={loading}>
-          {loading ? 'Processando...' : (isEditando ? 'Salvar Alterações' : 'Cadastrar Pedido')}
+          {loading ? 'Processando...' : (isEditando ? 'Salvar Alterações' : 'Continuar para Confirmação')}
         </Button>
       </motion.form>
     </div>
