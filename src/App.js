@@ -8,15 +8,15 @@ import Vendas from './components/Vendas'; // Página de "Vendas" para o cliente 
 import CadastroProduto from './components/CadastroProduto';
 import { PedidosProvider } from './context/PedidosContext';
 import Dashboard from './Dashboard';
-import CadastroPedido from './CadastroPedido'; // <-- ESTE É O COMPONENTE CERTO!
+import CadastroPedido from './CadastroPedido';
 import PrivateRoute from './PrivateRoute';
 import Home from './Home';
 import PaginaNaoEncontrada from './PaginaNaoEncontrada';
 import { AuthProvider } from './context/AuthContext';
 import Carrinho from './Carrinho';
-// import CadastroCliente from './CadastroCliente'; // <-- REMOVIDO!
+// import CadastroCliente from './CadastroCliente'; // Já deve ter sido removido
 import ConfirmacaoPedido from './ConfirmacaoPedido';
-import AgradecimentoPedido from './AgradecimentoPedido';
+import AgradecimentoPedido from './AgradecimentoPedido'; // Importação da página de agradecimento
 import PaginaDepoimentoSecreto from './components/PaginaDepoimentoSecreto';
 import AdminPage from './pages/AdminPage';
 import GerenciarDepoimentos from './admin/GerenciarDepoimentos';
@@ -31,10 +31,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/vendas" element={<Vendas />} />
             <Route path="/carrinho" element={<Carrinho />} />
-            {/* AQUI ESTÁ A CORREÇÃO CRÍTICA: */}
-            <Route path="/cliente/cadastro" element={<CadastroPedido />} /> 
+            <Route path="/cliente/cadastro" element={<CadastroPedido />} />
             <Route path="/cliente/confirmacao" element={<ConfirmacaoPedido />} />
-            <Route path="/cliente/agradecimento" element={<AgradecimentoPedido />} />
+            {/* CORREÇÃO AQUI: MUDANDO A ROTA PARA CORRESPONDER AO NAVIGATE */}
+            <Route path="/agradecimento" element={<AgradecimentoPedido />} /> 
             <Route path="/login" element={<Login />} />
             <Route path="/depoimento/:token" element={<PaginaDepoimentoSecreto />} />
             <Route path="*" element={<PaginaNaoEncontrada />} />
