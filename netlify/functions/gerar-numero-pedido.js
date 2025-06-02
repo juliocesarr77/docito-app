@@ -7,7 +7,7 @@ const admin = require('firebase-admin');
 let db;
 let firebaseInitialized = false; // Flag para controlar a inicialização única
 
-// Função assínrona para inicializar Firebase
+// Função assíncrona para inicializar Firebase
 async function initializeFirebase() {
     console.log("--- INICIANDO initializeFirebase ---");
 
@@ -19,16 +19,9 @@ async function initializeFirebase() {
     }
     
     // Teste 2: Verifica a natureza de admin.app e admin.credential.cert
-    // O log mostra admin.app: function, o que significa que precisamos chamar admin.app()
-    // para obter a interface do app.
-    console.log("admin.app (antes da chamada):", typeof admin.app); // Isso ainda deve ser 'function'
+    console.log("admin.app (antes da chamada):", typeof admin.app);
     console.log("admin.credential.cert:", typeof admin.credential.cert);
     
-    // CORREÇÃO AQUI: Não é mais admin.app.initializeApp, e sim admin.initializeApp
-    // Se admin.app é uma função, a inicialização pode ser diretamente em admin.initializeApp
-    // ou se admin.app é a forma de acessar a "app factory".
-    // Pela documentação do firebase-admin v10+, a forma de inicializar é diretamente `admin.initializeApp`.
-
     if (firebaseInitialized) {
         console.log("Firebase já inicializado (via hot start). Retornando.");
         return;
@@ -37,7 +30,6 @@ async function initializeFirebase() {
     console.log("Iniciando Firebase (cold start) - Prosseguindo com inicialização...");
 
     try {
-        // --- DEPURANDO CREDENCIAIS ---
         console.log("Verificando GOOGLE_SERVICE_ACCOUNT_CREDENTIALS...");
         console.log("Variável de ambiente GOOGLE_SERVICE_ACCOUNT_CREDENTIALS está definida?", !!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS);
         
@@ -61,23 +53,20 @@ async function initializeFirebase() {
         }
         console.log("Credenciais parseadas e verificadas: 'private_key' presente.");
 
-        // Inicializar Firebase Admin SDK
-        // CORREÇÃO: O initializeApp e cert são acessados diretamente do objeto 'admin' global.
         console.log("Tentando inicializar o aplicativo Firebase diretamente via admin.initializeApp...");
-        const app = admin.initializeApp({ // AQUI ESTÁ A MUDANÇA PRINCIPAL
+        const app = admin.initializeApp({
             credential: admin.credential.cert(serviceAccountCredentials),
         });
         console.log("Aplicativo Firebase inicializado com sucesso.");
 
-        // CORREÇÃO: getFirestore é acessado diretamente de admin.firestore
-        db = admin.firestore(app); // AQUI ESTÁ A OUTRA MUDANÇA PRINCIPAL
+        db = admin.firestore(app);
         console.log("Firebase Firestore inicializado com sucesso. Instância 'db' disponível.");
-        firebaseInitialized = true; // Marca como inicializado
+        firebaseInitialized = true;
 
     } catch (e) {
         console.error("!!! ERRO CATASTRÓFICO na inicialização do Firebase (initializeFirebase):", e.message);
         console.error("STACK TRACE COMPLETO:", e.stack);
-        firebaseInitialized = false; // Garante que será tentado novamente se falhar
+        firebaseInitialized = false;
         throw new Error(`Falha na inicialização do Firebase: ${e.message}. Um problema crítico ocorreu.`);
     } finally {
         console.log("--- FINALIZANDO initializeFirebase ---");
@@ -106,15 +95,27 @@ exports.handler = async (event, context) => {
 
         let requestBody;
         try {
-            console.log("Tentando parsear o corpo da requisição...");
+            // *** NOVO LOG AQUI PARA VER O RAW BODY ***
+            console.log("Conteúdo bruto do event.body:", event.body);
+            // *** FIM NOVO LOG ***
+
             requestBody = JSON.parse(event.body);
+            console.log("Corpo da requisição parseado. Conteúdo:", JSON.stringify(requestBody, null, 2)); // Log do objeto parseado
+            
             if (!requestBody || typeof requestBody !== 'object' || !requestBody.clienteData || !requestBody.itensCarrinho) {
                 console.error("Corpo da requisição inválido: clienteData ou itensCarrinho ausentes ou JSON malformado.");
+                // Log o tipo de requestBody e suas chaves
+                console.error("Tipo de requestBody:", typeof requestBody);
+                if (requestBody && typeof requestBody === 'object') {
+                    console.error("Chaves em requestBody:", Object.keys(requestBody));
+                }
                 throw new Error("Corpo da requisição inválido: JSON malformado ou campos 'clienteData'/'itensCarrinho' ausentes.");
             }
-            console.log("Corpo da requisição parseado com sucesso.");
+            console.log("Corpo da requisição parseado e validado com sucesso.");
         } catch (parseError) {
             console.error("Erro ao parsear o corpo da requisição:", parseError.message);
+            // Log o corpo bruto que causou o erro de parse, se possível
+            console.error("Raw event.body que causou o erro de parse:", event.body);
             return {
                 statusCode: 400,
                 headers: { 'Content-Type': 'application/json' },
@@ -155,12 +156,12 @@ exports.handler = async (event, context) => {
 
         console.log("Iniciando salvamento do pedido no Firestore...");
         const pedidoParaSalvar = {
-            ...requestBody.clienteData,
-            itensCarrinho: requestBody.itensCarrinho,
+            ...requestBody.clienteData, // Dados do cliente vindo do frontend
+            itensCarrinho: requestBody.itensCarrinho, // Itens do carrinho vindo do frontend
             numeroPedido: novoNumeroPedido,
             status: 'pendente',
             pagamentoStatus: 'aguardando_contato',
-            createdAt: FieldValue.serverTimestamp(),
+            createdAt: admin.firestore.FieldValue.serverTimestamp(), // Usar admin.firestore.FieldValue
         };
 
         const docRef = await db.collection('pedidos').add(pedidoParaSalvar);
